@@ -158,7 +158,7 @@ public class LevelMenuGui extends Canvas implements Runnable {
 	}
 
 	private void renderList() {
-		for (int i = 0; i < 7; i++) {
+		for (int i = 0; i < 6; i++) {
 			g.setFont(new Font("New Times Roman", 4, 22));
 			g.setColor(Color.orange);
 			g.drawString(levelNames[nameIndex + i], 420, 110 + 62 * i);
