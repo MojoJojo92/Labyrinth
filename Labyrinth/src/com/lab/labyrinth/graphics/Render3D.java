@@ -12,7 +12,6 @@ public class Render3D extends Render {
 	private double renderDistance;
 	public static double cosine, sine, up, bobbing, xx, yy, z;
 	public static double forward, sideways;
-	private int xL = 0, xR = 0, zL = 0, zR = 0;
 	public ArrayList<Detection> detectionList = new ArrayList<Detection>();
 	private int xPix = 0, yPix = 0;
 	private static Detection k;
@@ -73,30 +72,12 @@ public class Render3D extends Render {
 					pixels[x + y * width] = 0;
 				}
 			}
-			for (Detection l : detectionList) {
-				if (l.getItem() == 1)
-					if (Math.abs(forward - 8 * l.getzL()) < 5 && Math.abs(sideways - 8 * l.getxL()) < 5){
-						l.detectCollision();
-					}
-					else
-						l.detectFinish();
-			}
+			for (Detection l : detectionList)
+				l.detectCollision();
 		}
 	}
 
-	public void walls(double xLeft, double xRight, double zDistanceRight, double zDistanceLeft, double yHeight, int item) {
-
-		xL = (int) xLeft;
-		xR = (int) xRight;
-		zR = (int) zDistanceRight;
-		zL = (int) zDistanceLeft;
-
-		//if(detectionList.indexOf(new Detection(game, xL, xR, zR, zL, item)) != -1)
-		//detectionList.get(detectionList.indexOf(new Detection(game, xL, xR, zR, zL, item))).detectCollision();
-		/*
-		 * k = new Detection(game, xL, xR, zR, zL, item); if (yHeight == 0) {
-		 * detectionList.add(k); }
-		 */
+	public void walls(double xLeft, double xRight, double zDistanceRight, double zDistanceLeft, double yHeight) {
 
 		double xcLeft = ((xLeft / 2) - (sideways / 16.0)) * 2.0;
 		double zcLeft = ((zDistanceLeft / 2) - (forward / 16.0)) * 2.0;
@@ -162,39 +143,37 @@ public class Render3D extends Render {
 		double tex3 = tex3o / rotLeftSideZ;
 		double tex4 = tex4o / rotRightSideZ - tex3;
 
-		if (item == 1) {
-			for (int x = xPixelLeftInt; x < xPixelRightInt; x++) {
+		for (int x = xPixelLeftInt; x < xPixelRightInt; x++) {
 
-				double pixelRotation = (x - xPixelLeft) / (xPixelRight - xPixelLeft);
-				double zWall = (tex1 + (tex2 - tex1) * pixelRotation);
+			double pixelRotation = (x - xPixelLeft) / (xPixelRight - xPixelLeft);
+			double zWall = (tex1 + (tex2 - tex1) * pixelRotation);
 
-				if (zBufferWall[x] > zWall) {
-					continue;
-				}
-				zBufferWall[x] = zWall;
+			if (zBufferWall[x] > zWall) {
+				continue;
+			}
+			zBufferWall[x] = zWall;
 
-				int xTexture = (int) ((tex3 + tex4 * pixelRotation) / zWall);
-				double yPixelTop = yPixelLeftTop + (yPixelRightTop - yPixelLeftTop) * pixelRotation;
-				double yPixelBottom = yPixelLeftBottom + (yPixelRightBottom - yPixelLeftBottom) * pixelRotation;
+			int xTexture = (int) ((tex3 + tex4 * pixelRotation) / zWall);
+			double yPixelTop = yPixelLeftTop + (yPixelRightTop - yPixelLeftTop) * pixelRotation;
+			double yPixelBottom = yPixelLeftBottom + (yPixelRightBottom - yPixelLeftBottom) * pixelRotation;
 
-				int yPixelTopInt = (int) yPixelTop;
-				int yPixelBottomInt = (int) yPixelBottom;
+			int yPixelTopInt = (int) yPixelTop;
+			int yPixelBottomInt = (int) yPixelBottom;
 
-				if (yPixelTopInt < 0) {
-					yPixelTopInt = 0;
-				}
+			if (yPixelTopInt < 0) {
+				yPixelTopInt = 0;
+			}
 
-				if (yPixelBottomInt > height) {
-					yPixelBottomInt = height;
-				}
+			if (yPixelBottomInt > height) {
+				yPixelBottomInt = height;
+			}
 
-				for (int y = yPixelTopInt; y < yPixelBottomInt; y++) {
-					double pixelRotationY = (y - yPixelTop) / (yPixelBottom - yPixelTop);
-					int yTexture = (int) (16 * pixelRotationY);
+			for (int y = yPixelTopInt; y < yPixelBottomInt; y++) {
+				double pixelRotationY = (y - yPixelTop) / (yPixelBottom - yPixelTop);
+				int yTexture = (int) (16 * pixelRotationY);
 
-					pixels[x + y * width] = Texture.floor.pixels[(xTexture & 15) + (yTexture & 15) * 16];
-					zBuffer[x + y * width] = 1 / zWall * 6;
-				}
+				pixels[x + y * width] = Texture.floor.pixels[(xTexture & 15) + (yTexture & 15) * 16];
+				zBuffer[x + y * width] = 1 / zWall * 6;
 			}
 		}
 	}
@@ -222,13 +201,6 @@ public class Render3D extends Render {
 
 			pixels[i] = r << 16 | g << 8 | b;
 		}
-	}
-
-	private boolean finish() {
-		if (forward > finishY * 8 && forward < zL * 8 + 6 && sideways < finishX * 8 && sideways > finishX * 8 + 6) {
-			return true;
-		}
-		return false;
 	}
 
 	public void setFinishX(int finishX) {
