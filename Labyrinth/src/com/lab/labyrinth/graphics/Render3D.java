@@ -14,8 +14,6 @@ public class Render3D extends Render {
 	public static double forward, sideways;
 	public ArrayList<Detection> detectionList = new ArrayList<Detection>();
 	private int xPix = 0, yPix = 0;
-	private static Detection k;
-	private int finishX, finishY;
 	private Game game;
 
 	public Render3D(ArrayList<Detection> detectionList, Game game, int width, int height) {
@@ -41,8 +39,6 @@ public class Render3D extends Render {
 		double rotation = game.controls.rotation;
 		cosine = Math.cos(rotation);
 		sine = Math.sin(rotation);
-		// c = new ArrayList<CollisionDetection>();
-		// for (CollisionDetection l : c) { l = null; }
 
 		for (int y = 0; y < height; y++) {
 			double ceiling = (y + -height / 2.0) / height;
@@ -71,14 +67,14 @@ public class Render3D extends Render {
 				if (z > 400) {
 					pixels[x + y * width] = 0;
 				}
+				if(xPix > detectionList.get(detectionList.size()-1).getX() * 8 - 24 && xPix < detectionList.get(detectionList.size()-1).getX()* 8 +1&& yPix > detectionList.get(detectionList.size()-1).getZ() * 8 -1 && yPix < detectionList.get(detectionList.size()-1).getZ()* 8 + 24)
+					pixels[x + y * width] = Texture.finish.pixels[(xPix & 15) + (yPix & 15) * 16];
 			}
 			for (int i = 0; i < detectionList.size()-1; i++)
 				detectionList.get(i).detectCollision();
-			if(detectionList.get(detectionList.size()-1).detectFinish())
-				System.out.println(true);
-			else
-				System.out.println(false);
 		}
+		if(detectionList.get(detectionList.size()-1).detectFinish())
+			System.out.println(true);
 	}
 
 	public void walls(double xLeft, double xRight, double zDistanceRight, double zDistanceLeft, double yHeight) {
@@ -205,13 +201,5 @@ public class Render3D extends Render {
 
 			pixels[i] = r << 16 | g << 8 | b;
 		}
-	}
-
-	public void setFinishX(int finishX) {
-		this.finishX = finishX;
-	}
-
-	public void setFinishY(int finishY) {
-		this.finishY = finishY;
 	}
 }

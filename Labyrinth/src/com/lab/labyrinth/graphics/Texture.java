@@ -6,6 +6,7 @@ import javax.imageio.ImageIO;
 
 public class Texture {
 	public static Render floor = loadBitmap("/textures/floor_1.png");
+	public static Render finish = loadBitmap("/textures/finish.png");
 
 	public static Render loadBitmap(String fileName) {
 		try {

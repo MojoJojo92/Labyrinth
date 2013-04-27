@@ -16,12 +16,6 @@ public class Detection {
 	public boolean detectFinish() {
 		if (playerIn(z * 8, z * 8 + 31, x * 8 - 31, x * 8))
 			return true;
-	/*	if (playerIn(zL * 8, zL * 8 + 6, xL * 8 - 11, xL * 8 + 3))
-			return true;
-		if (playerIn(zL * 8 - 11, zL * 8 + 3, xL * 8 - 6, xL * 8))
-			return true;
-		if (playerIn(z * 8 - 11, z * 8 + 3, xL * 8, xL * 8 + 6))
-			return true;*/
 		return false;
 	}
 
@@ -62,5 +56,13 @@ public class Detection {
 		if (Math.abs(game.controls.z - z * 8) < 40 && Math.abs(game.controls.x - x * 8) < 40)
 			return true;
 		return false;
+	}
+
+	public int getX() {
+		return x;
+	}
+
+	public int getZ() {
+		return z;
 	}
 }
