@@ -13,26 +13,17 @@ public class Detection {
 		this.game = game;
 	}
 
-	/*public boolean detectFinish() {
-		if (zL == z) {
-			if (x > xL) {
-				if (playerIn(zL * 8 - 6, zL * 8, x * 8 - 11, x * 8 + 3))
-					return true;
-			} else {
-				if (playerIn(zL * 8, zL * 8 + 6, xL * 8 - 11, xL * 8 + 3))
-					return true;
-			}
-		} else {
-			if (zL > z) {
-				if (playerIn(zL * 8 - 11, zL * 8 + 3, xL * 8 - 6, xL * 8))
-					return true;
-			} else {
-				if (playerIn(z * 8 - 11, z * 8 + 3, xL * 8, xL * 8 + 6))
-					return true;
-			}
-		}
+	public boolean detectFinish() {
+		if (playerIn(z * 8, z * 8 + 31, x * 8 - 31, x * 8))
+			return true;
+	/*	if (playerIn(zL * 8, zL * 8 + 6, xL * 8 - 11, xL * 8 + 3))
+			return true;
+		if (playerIn(zL * 8 - 11, zL * 8 + 3, xL * 8 - 6, xL * 8))
+			return true;
+		if (playerIn(z * 8 - 11, z * 8 + 3, xL * 8, xL * 8 + 6))
+			return true;*/
 		return false;
-	}*/
+	}
 
 	public void detectCollision() {
 		if (inDistance()) {

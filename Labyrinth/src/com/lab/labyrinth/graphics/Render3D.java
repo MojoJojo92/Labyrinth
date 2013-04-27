@@ -72,8 +72,12 @@ public class Render3D extends Render {
 					pixels[x + y * width] = 0;
 				}
 			}
-			for (Detection l : detectionList)
-				l.detectCollision();
+			for (int i = 0; i < detectionList.size()-1; i++)
+				detectionList.get(i).detectCollision();
+			if(detectionList.get(detectionList.size()-1).detectFinish())
+				System.out.println(true);
+			else
+				System.out.println(false);
 		}
 	}
 

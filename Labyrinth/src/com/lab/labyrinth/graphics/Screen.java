@@ -11,16 +11,16 @@ public class Screen extends Render {
 	private Render3D render3D;
 	private Level level;
 	private ArrayList<Detection> detectionList;
-	private Detection finish;
 	private int renderDistance = 500;
-	private int spawnX, spawnY;
+	private int spawnX, spawnY, finishX, finishY;
 
 	public Screen(Game game, Level level, int width, int height) {
 		super(width, height);
 		this.level = level;
 		this.game = game;
-		findSpawn();
+		findSpawnFinish();
 		constructDetection();
+		finishBlock((finishX - spawnX - 1) * 3,(finishY - spawnY - 1) * 3);
 		render3D = new Render3D(detectionList, this.game, width, height);
 	}
 
@@ -58,12 +58,8 @@ public class Screen extends Render {
 		}
 	}
 
-	private void finishBlock(int xb, int zb) {
-		if (Math.abs(Render3D.forward - 8 * zb) < renderDistance && Math.abs(Render3D.sideways - 8 * xb) < renderDistance) {
-			for (int y = 0; y < 3; y++) {
-
-			}
-		}
+	private void finishBlock(int i, int j) {
+		detectionList.add(new Detection(game, i, j));
 	}
 
 	private void constructDetection() {
@@ -74,12 +70,15 @@ public class Screen extends Render {
 					detectionList.add(new Detection(game, ((i - spawnX) - 1) * 3, ((j - spawnY) - 1) * 3));
 	}
 
-	private void findSpawn() {
+	private void findSpawnFinish() {
 		for (int i = 0; i < level.getLvlWidth(); i++) {
 			for (int j = 0; j < level.getLvlHeight(); j++) {
 				if (level.getFlag()[i][j] == 3) {
 					spawnX = i;
 					spawnY = j;
+				}else if(level.getFlag()[i][j] == 4){
+					finishX = i;
+					finishY = j;
 				}
 			}
 		}
