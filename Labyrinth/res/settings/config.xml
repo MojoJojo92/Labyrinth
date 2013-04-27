@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Options</comment>
+<entry key="Forward">W</entry>
+<entry key="Jump">SPACE</entry>
+<entry key="Run">SHIFT</entry>
+<entry key="TurnRight">RIGHT</entry>
+<entry key="TurnLeft">LEFT</entry>
+<entry key="Left">A</entry>
+<entry key="Brightness">50</entry>
+<entry key="Right">D</entry>
+<entry key="Sensitivity">50</entry>
+<entry key="Volume">50</entry>
+<entry key="Back">S</entry>
+</properties>

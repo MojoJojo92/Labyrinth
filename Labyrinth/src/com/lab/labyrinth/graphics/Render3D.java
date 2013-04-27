@@ -1,0 +1,241 @@
+package com.lab.labyrinth.graphics;
+
+import java.util.ArrayList;
+
+import com.lab.labyrinth.input.Controller;
+import com.lab.labyrinth.input.Game;
+
+public class Render3D extends Render {
+
+	public double zBuffer[];
+	public double zBufferWall[];
+	private double renderDistance;
+	public static double cosine, sine, up, bobbing, xx, yy, z;
+	public static double forward, sideways;
+	private int xL = 0, xR = 0, zL = 0, zR = 0;
+	public ArrayList<Detection> detectionList = new ArrayList<Detection>();
+	private int xPix = 0, yPix = 0;
+	private static Detection k;
+	private int finishX, finishY;
+	private Game game;
+
+	public Render3D(ArrayList<Detection> detectionList, Game game, int width, int height) {
+		super(width, height);
+		this.detectionList = detectionList;
+		this.game = game;
+		zBuffer = new double[width * height];
+		zBufferWall = new double[width];
+		renderDistance = 5500;
+	}
+
+	public void floor() {
+		for (int x = 0; x < width; x++) {
+			zBufferWall[x] = 0;
+		}
+
+		double ceilingPosition = 16;
+		double floorPosition = 8;
+		forward = game.controls.z;
+		sideways = game.controls.x;
+		up = game.controls.y;
+
+		double rotation = game.controls.rotation;
+		cosine = Math.cos(rotation);
+		sine = Math.sin(rotation);
+		// c = new ArrayList<CollisionDetection>();
+		// for (CollisionDetection l : c) { l = null; }
+
+		for (int y = 0; y < height; y++) {
+			double ceiling = (y + -height / 2.0) / height;
+			if (Controller.walkBobbing) {
+				bobbing = Math.sin(game.time / 5.0) * 0.5;
+			} else if (Controller.runBobbing) {
+				bobbing = (Math.sin(game.time / 5.0) * 0.5) * 2;
+			} else if (Controller.crouchBobbing) {
+				bobbing = (Math.sin(game.time / 5.0) * 0.1) / 4;
+			} else {
+				bobbing = 0;
+			}
+			z = (floorPosition + up + bobbing) / ceiling;
+			if (ceiling < 0) {
+				z = (ceilingPosition - up - bobbing) / -ceiling;
+			}
+			for (int x = 0; x < width; x++) {
+				double depth = (x - width / 2.0) / height;
+				depth *= z;
+				xx = depth * cosine + z * sine;
+				yy = z * cosine - depth * sine;
+				xPix = (int) (xx + sideways);
+				yPix = (int) (yy + forward);
+				zBuffer[x + y * width] = z;
+				pixels[x + y * width] = Texture.floor.pixels[(xPix & 15) + (yPix & 15) * 16];
+				if (z > 400) {
+					pixels[x + y * width] = 0;
+				}
+			}
+			for (Detection l : detectionList) {
+				if (l.getItem() == 1)
+					if (Math.abs(forward - 8 * l.getzL()) < 5 && Math.abs(sideways - 8 * l.getxL()) < 5){
+						l.detectCollision();
+					}
+					else
+						l.detectFinish();
+			}
+		}
+	}
+
+	public void walls(double xLeft, double xRight, double zDistanceRight, double zDistanceLeft, double yHeight, int item) {
+
+		xL = (int) xLeft;
+		xR = (int) xRight;
+		zR = (int) zDistanceRight;
+		zL = (int) zDistanceLeft;
+
+		//if(detectionList.indexOf(new Detection(game, xL, xR, zR, zL, item)) != -1)
+		//detectionList.get(detectionList.indexOf(new Detection(game, xL, xR, zR, zL, item))).detectCollision();
+		/*
+		 * k = new Detection(game, xL, xR, zR, zL, item); if (yHeight == 0) {
+		 * detectionList.add(k); }
+		 */
+
+		double xcLeft = ((xLeft / 2) - (sideways / 16.0)) * 2.0;
+		double zcLeft = ((zDistanceLeft / 2) - (forward / 16.0)) * 2.0;
+		double rotLeftSideX = xcLeft * cosine - zcLeft * sine;
+		double yCornerTL = ((-(yHeight / 2)) - (-up / 16.0) + (bobbing / 16.0)) * 2.0;
+		double yCornerBL = ((0.5 - (yHeight / 2)) - (-up / 16.0) + (bobbing / 16.0)) * 2.0;
+		double rotLeftSideZ = zcLeft * cosine + xcLeft * sine;
+
+		double xcRight = ((xRight / 2) - (sideways / 16.0)) * 2.0;
+		double zcRight = ((zDistanceRight / 2) - (forward / 16.0)) * 2.0;
+		double rotRightSideX = xcRight * cosine - zcRight * sine;
+		double yCornerTR = ((-(yHeight / 2)) - (-up / 16.0) + (bobbing / 16.0)) * 2.0;
+		double yCornerBR = ((0.5 - (yHeight / 2)) - (-up / 16.0) + (bobbing / 16.0)) * 2.0;
+		double rotRightSideZ = zcRight * cosine + xcRight * sine;
+
+		double tex3o = 0;
+		double tex4o = 8;
+		double clip = 0.5;
+
+		if (rotLeftSideZ < clip && rotRightSideZ < clip) {
+			return;
+		}
+
+		if (rotLeftSideZ < clip) {
+			double clip0 = (clip - rotLeftSideZ) / (rotRightSideZ - rotLeftSideZ);
+			rotLeftSideZ = rotLeftSideZ + (rotRightSideZ - rotLeftSideZ) * clip0;
+			rotLeftSideX = rotLeftSideX + (rotRightSideX - rotLeftSideX) * clip0;
+			tex3o = tex3o + (tex4o - tex3o) * clip0;
+		}
+
+		if (rotRightSideZ < clip) {
+			double clip0 = (clip - rotLeftSideZ) / (rotRightSideZ - rotLeftSideZ);
+			rotRightSideZ = rotLeftSideZ + (rotRightSideZ - rotLeftSideZ) * clip0;
+			rotRightSideX = rotLeftSideX + (rotRightSideX - rotLeftSideX) * clip0;
+			tex4o = tex3o + (tex4o - tex3o) * clip0;
+		}
+
+		double xPixelLeft = (rotLeftSideX / rotLeftSideZ * height + width / 2.0);
+		double xPixelRight = (rotRightSideX / rotRightSideZ * height + width / 2.0);
+
+		if (xPixelLeft >= xPixelRight) {
+			return;
+		}
+
+		int xPixelLeftInt = (int) xPixelLeft;
+		int xPixelRightInt = (int) xPixelRight;
+
+		if (xPixelLeftInt < 0) {
+			xPixelLeftInt = 0;
+		}
+
+		if (xPixelRightInt > width) {
+			xPixelRightInt = width;
+		}
+
+		double yPixelLeftTop = yCornerTL / rotLeftSideZ * height + height / 2.0;
+		double yPixelLeftBottom = yCornerBL / rotLeftSideZ * height + height / 2.0;
+		double yPixelRightTop = yCornerTR / rotRightSideZ * height + height / 2.0;
+		double yPixelRightBottom = yCornerBR / rotRightSideZ * height + height / 2.0;
+
+		double tex1 = 1 / rotLeftSideZ;
+		double tex2 = 1 / rotRightSideZ;
+		double tex3 = tex3o / rotLeftSideZ;
+		double tex4 = tex4o / rotRightSideZ - tex3;
+
+		if (item == 1) {
+			for (int x = xPixelLeftInt; x < xPixelRightInt; x++) {
+
+				double pixelRotation = (x - xPixelLeft) / (xPixelRight - xPixelLeft);
+				double zWall = (tex1 + (tex2 - tex1) * pixelRotation);
+
+				if (zBufferWall[x] > zWall) {
+					continue;
+				}
+				zBufferWall[x] = zWall;
+
+				int xTexture = (int) ((tex3 + tex4 * pixelRotation) / zWall);
+				double yPixelTop = yPixelLeftTop + (yPixelRightTop - yPixelLeftTop) * pixelRotation;
+				double yPixelBottom = yPixelLeftBottom + (yPixelRightBottom - yPixelLeftBottom) * pixelRotation;
+
+				int yPixelTopInt = (int) yPixelTop;
+				int yPixelBottomInt = (int) yPixelBottom;
+
+				if (yPixelTopInt < 0) {
+					yPixelTopInt = 0;
+				}
+
+				if (yPixelBottomInt > height) {
+					yPixelBottomInt = height;
+				}
+
+				for (int y = yPixelTopInt; y < yPixelBottomInt; y++) {
+					double pixelRotationY = (y - yPixelTop) / (yPixelBottom - yPixelTop);
+					int yTexture = (int) (16 * pixelRotationY);
+
+					pixels[x + y * width] = Texture.floor.pixels[(xTexture & 15) + (yTexture & 15) * 16];
+					zBuffer[x + y * width] = 1 / zWall * 6;
+				}
+			}
+		}
+	}
+
+	public void renderDistancelimiter() {
+		for (int i = 0; i < width * height; i++) {
+			int colour = pixels[i];
+			int brightness = (int) (renderDistance / zBuffer[i]);
+
+			if (brightness < 0) {
+				brightness = 0;
+			}
+
+			if (brightness > 255) {
+				brightness = 255;
+			}
+
+			int r = (colour >> 16) & 0xff;
+			int g = (colour >> 8) & 0xff;
+			int b = (colour) & 0xff;
+
+			r = r * brightness / 255;
+			g = g * brightness / 255;
+			b = b * brightness / 255;
+
+			pixels[i] = r << 16 | g << 8 | b;
+		}
+	}
+
+	private boolean finish() {
+		if (forward > finishY * 8 && forward < zL * 8 + 6 && sideways < finishX * 8 && sideways > finishX * 8 + 6) {
+			return true;
+		}
+		return false;
+	}
+
+	public void setFinishX(int finishX) {
+		this.finishX = finishX;
+	}
+
+	public void setFinishY(int finishY) {
+		this.finishY = finishY;
+	}
+}
