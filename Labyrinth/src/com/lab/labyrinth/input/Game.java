@@ -9,7 +9,7 @@ public class Game {
 	public int time;
 	public Controller controls;
 	private int renderDistance;
-	private boolean play, pause, finish;
+	private boolean play, pause, finish, countdown;
 
 	public Game() {
 		controls = new Controller();
@@ -17,6 +17,7 @@ public class Game {
 		play = true;
 		pause = false;
 		finish = false;
+		countdown = true;
 	}
 
 	public void tick(boolean[] key) {
@@ -71,5 +72,13 @@ public class Game {
 
 	public void setFinish(boolean finish) {
 		this.finish = finish;
+	}
+
+	public boolean isCountdown() {
+		return countdown;
+	}
+
+	public void setCountdown(boolean countdown) {
+		this.countdown = countdown;
 	}
 }

@@ -29,7 +29,7 @@ public class Controller {
 		double xMove = 0;
 		double zMove = 0;
 
-		if (Display.game.isPlay()) {
+		if (Display.game.isPlay() && !Display.game.isCountdown()) {
 			if (forward) {
 				if (!collision) {
 					zMove++;

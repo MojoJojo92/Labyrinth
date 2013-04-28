@@ -127,16 +127,15 @@ public class PlayMenuGui extends Canvas implements Runnable {
 			if (InputHandler.MousePressed == 1) {
 				clickCheck();
 				new LauncherGui();
-				stopPlayMenu();
 				frame.dispose();
-				
+				stopPlayMenu();
 			}
 		}
 	}
 
 	private void loadImages() {
 		try {
-			background = ImageIO.read(PlayMenuGui.class.getResource("/textures/inGameMenu.png"));
+			background = ImageIO.read(PlayMenuGui.class.getResource("/textures/inGameMenu2.png"));
 			standardLvlBtn = ImageIO.read(PlayMenuGui.class.getResource("/textures/standardLevels.png"));
 			customLvlBtn = ImageIO.read(PlayMenuGui.class.getResource("/textures/customLevels.png"));
 			rankingsBtn = ImageIO.read(PlayMenuGui.class.getResource("/textures/rankings.png"));
