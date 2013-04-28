@@ -50,6 +50,25 @@ public class LevelSerialization {
 		}
 
 	}
+	
+	public void serializeLevel(String levelName) {
+		try {
+			levelPath += levelName + ".ser";
+			File file = new File(levelPath);
+			if (file.exists())
+				file.createNewFile();
+			FileOutputStream fileOut = new FileOutputStream(levelPath);
+			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			out.writeObject(levels);
+			out.close();
+			fileOut.close();
+		} catch (IOException i) {
+			i.printStackTrace();
+		} finally {
+			System.out.println("Serialization Attempted...");
+		}
+
+	}
 
 	public void serializeNames(String name) {
 		try {

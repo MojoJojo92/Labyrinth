@@ -89,4 +89,74 @@ public class Level implements Serializable{
 	public int getLvlHeight() {
 		return lvlHeight;
 	}
+
+
+	public String getLevelName() {
+		return levelName;
+	}
+
+
+	public void setLevelName(String levelName) {
+		this.levelName = levelName;
+	}
+
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+
+	public void setFlag(int[][] flag) {
+		this.flag = flag;
+	}
+
+
+	public void setMinTimeLimit(int minTimeLimit) {
+		this.minTimeLimit = minTimeLimit;
+	}
+
+
+	public void setSecTimeLimit(int secTimeLimit) {
+		this.secTimeLimit = secTimeLimit;
+	}
+
+
+	public void setMinBestTime(int minBestTime) {
+		this.minBestTime = minBestTime;
+	}
+
+
+	public void setSecBestTime(int secBestTime) {
+		this.secBestTime = secBestTime;
+	}
+
+
+	public void setBlocks(int blocks) {
+		this.blocks = blocks;
+	}
+
+
+	public void setSpawnX(int spawnX) {
+		this.spawnX = spawnX;
+	}
+
+
+	public void setSpawnY(int spawnY) {
+		this.spawnY = spawnY;
+	}
+
+
+	public void setLvlWidth(int lvlWidth) {
+		this.lvlWidth = lvlWidth;
+	}
+
+
+	public void setLvlHeight(int lvlHeight) {
+		this.lvlHeight = lvlHeight;
+	}
+
+
+	public void setRankings(ArrayList<String> rankings) {
+		this.rankings = rankings;
+	}
 }

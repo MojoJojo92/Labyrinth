@@ -12,15 +12,18 @@ import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
+import com.lab.labyrinth.account.AccountGui;
 import com.lab.labyrinth.input.Controller;
 import com.lab.labyrinth.input.Game;
 import com.lab.labyrinth.input.InputHandler;
 import com.lab.labyrinth.launcher.OptionsGui;
 import com.lab.labyrinth.level.Level;
+import com.lab.labyrinth.level.LevelSerialization;
 import com.lab.labyrinth.play.PlayMenuGui;
 
 public class Display extends Canvas implements Runnable {
@@ -39,7 +42,7 @@ public class Display extends Canvas implements Runnable {
 	private Level level;
 	private Cursor blank;
 	private boolean running = false;
-	private int[] pixels;
+	private int[] pixels, rankings;
 	private int newX = 0, oldX = 0, fps;
 	private int gameTime, minutes, seconds, fullTime;
 
@@ -190,6 +193,7 @@ public class Display extends Canvas implements Runnable {
 			if (InputHandler.MousePressed == 1){
 				clickCheck();
 				frame.dispose();
+				setRankings();
 				new PlayMenuGui();
 				stop();
 			}
@@ -319,6 +323,33 @@ public class Display extends Canvas implements Runnable {
 			g.setColor(Color.green);
 		else
 			g.setColor(Color.orange);
+	}
+	
+	private void setRankings(){
+		rankings = new int[3];
+		for(int i = 0; i < 3; i++){
+			rankings[i] = Integer.parseInt(level.getRankings().get(i).substring(level.getRankings().get(i).indexOf(" ")+2, level.getRankings().get(i).indexOf(":")-1))*60 + Integer.parseInt((level.getRankings().get(i).substring(level.getRankings().get(i).indexOf(":")+2, level.getRankings().get(i).length())));
+			System.out.println(rankings[i]);
+		}
+		if(time > rankings[0]){
+			level.getRankings().remove(2);
+			level.getRankings().add(2, level.getRankings().get(1));
+			level.getRankings().remove(1);
+			level.getRankings().add(1, level.getRankings().get(0));
+			level.getRankings().remove(0);
+			level.getRankings().add(0, AccountGui.Username+"  "+Integer.toString(time / 60) + " : " + Integer.toString(time % 60));
+			level.setMinBestTime(time / 60);
+			level.setSecBestTime(time % 60);
+		}else if(time > rankings[1]){
+			level.getRankings().remove(2);
+			level.getRankings().add(2, level.getRankings().get(1));
+			level.getRankings().remove(1);
+			level.getRankings().add(1, AccountGui.Username+"  "+Integer.toString(time / 60) + " : " + Integer.toString(time % 60));
+		}else if(time > rankings[2]){
+			level.getRankings().remove(2);
+			level.getRankings().add(2, AccountGui.Username+"  "+Integer.toString(time / 60) + " : " + Integer.toString(time % 60));
+		}
+		new LevelSerialization(level);
 	}
 
 	private boolean mouseIn(int xS, int xF, int yS, int yF) {
