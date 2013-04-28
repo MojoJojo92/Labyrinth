@@ -69,7 +69,7 @@ public class Render3D extends Render {
 				detectionList.get(i).detectCollision();
 		}
 		if(detectionList.get(detectionList.size()-1).detectFinish())
-			Display.finish = true;
+			Display.game.setFinish(true);
 	}
 
 	public void walls(double xLeft, double xRight, double zDistanceRight, double zDistanceLeft, double yHeight) {

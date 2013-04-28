@@ -29,86 +29,86 @@ public class Controller {
 		double xMove = 0;
 		double zMove = 0;
 
-		if (forward) {
-			if (!collision) {
-				zMove++;
+		if (Display.game.isPlay()) {
+			if (forward) {
+				if (!collision) {
+					zMove++;
+				}
+				walkBobbing = true;
 			}
-			walkBobbing = true;
-		}
 
-		if (back) {
-			if (!collision) {
-				zMove--;
+			if (back) {
+				if (!collision) {
+					zMove--;
+				}
+				walkBobbing = true;
 			}
-			walkBobbing = true;
-		}
 
-		if (left) {
-			if (!collision) {
-				xMove--;
+			if (left) {
+				if (!collision) {
+					xMove--;
+				}
+				walkBobbing = true;
 			}
-			walkBobbing = true;
-		}
 
-		if (right) {
-			if (!collision) {
-				xMove++;
+			if (right) {
+				if (!collision) {
+					xMove++;
+				}
+				walkBobbing = true;
 			}
-			walkBobbing = true;
-		}
-		
-		if (rLeft) {
-			rotationa -= rotationSpeedB;
+
+			if (rLeft) {
+				rotationa -= rotationSpeedB;
+			}
+
+			if (rRight) {
+				rotationa += rotationSpeedB;
+			}
+
+			if (turnLeft) {
+				rotationa -= rotationSpeedA;
+			}
+
+			if (turnRight) {
+				rotationa += rotationSpeedA;
+			}
+
+			if (jump) {
+				y += jumpHeight;
+			}
+
+			if (crouch) {
+				y -= crouchHeight / 2;
+				walkSpeed = 0.2;
+			}
+
+			if (run) {
+				walkSpeed = 0.8;
+			}
+
+			if (run & (forward || back || left || right)) {
+				runBobbing = true;
+			}
+
+			if (crouch & (forward || back || left || right)) {
+				runBobbing = true;
+			}
+
+			if (!forward && !back && !left && !right && !jump) {
+				walkBobbing = false;
+			}
+
+			if (!run) {
+				runBobbing = false;
+			}
+
+			if (!crouch) {
+				crouchBobbing = false;
+			}
 		}
 
-		if (rRight) {
-			rotationa += rotationSpeedB;
-		}
-
-		if (turnLeft) {
-			rotationa -= rotationSpeedA;
-		}
-
-		if (turnRight) {
-			rotationa += rotationSpeedA;
-		}
-
-		if (jump) {
-			y += jumpHeight;
-			Display.game.setPlay(true);
-			Display.game.setPause(false);
-		}
-
-		if (crouch) {
-			y -= crouchHeight / 2;
-			walkSpeed = 0.2;
-		}
-
-		if (run) {
-			walkSpeed = 0.8;
-		}
-
-		if (run & (forward || back || left || right)) {
-			runBobbing = true;
-		}
-
-		if (crouch & (forward || back || left || right)) {
-			runBobbing = true;
-		}
-
-		if (!forward && !back && !left && !right && !jump) {
-			walkBobbing = false;
-		}
-
-		if (!run) {
-			runBobbing = false;
-		}
-
-		if (!crouch) {
-			crouchBobbing = false;
-		}
-		
-		if(pause){
+		if (pause) {
 			Display.game.setPlay(false);
 			Display.game.setPause(true);
 		}

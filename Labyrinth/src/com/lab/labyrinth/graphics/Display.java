@@ -29,13 +29,11 @@ public class Display extends Canvas implements Runnable {
 	private static int width = 900;
 	private static int height = 650;
 	public static int mouseSpeed;
-	public static boolean finish;
-	public static boolean pause;
 	private Thread thread;
 	private Screen screen;
 	public static Game game;
 	private InputHandler input;
-	private BufferedImage img, resumeOff, resumeOn, restartOff, restartOn, optionsOff, optionsOn, quitOff, quitOn, cursor;
+	private BufferedImage img, resumeOff, resumeOn, restartOff, restartOn, optionsOff, optionsOn, quitOff, quitOn, filter, exitOff, exitOn, cursor;
 	private Graphics g;
 	private JFrame frame;
 	private Level level;
@@ -173,11 +171,37 @@ public class Display extends Canvas implements Runnable {
 	}
 
 	private void renderFinish() {
+		frame.getContentPane().setCursor(null);
+		game.setPlay(false);
+		g.setFont(new Font("Verdana", 3, 40));
+		g.drawImage(img, 0, 0, getWidth(), getHeight(), null);
+		g.drawImage(filter, 0, 0, getWidth(), getHeight(), null);
+		g.setColor(Color.orange);
+		g.drawString("Your Time", width/2 - ("Your Time".length()*25)/2, 100);
+		g.drawString("Level Rankings", width/2 - ("Level Rankings".length()*25)/2, 250);
+		g.setFont(new Font("Verdana", 3, 35));
+		g.drawString("1st "+level.getRankings().get(0), width/2 - (("1st "+level.getRankings().get(0)).length()*21)/2, 300);
+		g.drawString("2nd "+level.getRankings().get(1), width/2 - (("2nd "+level.getRankings().get(1)).length()*21)/2, 350);
+		g.drawString("3rd "+level.getRankings().get(2), width/2 - (("3rd "+level.getRankings().get(2)).length()*21)/2, 400);
+		g.setColor(Color.green);
+		g.drawString(Integer.toString(time / 60) + ":" + Integer.toString(time % 60), width/2 -((Integer.toString(time / 60) + ":" + Integer.toString(time % 60)).length()*25)/2 , 150);
+		if(mouseIn(width/2 - exitOn.getWidth()/2, width/2 - exitOn.getWidth()/2 + exitOn.getWidth(), 500, 500+ exitOn.getHeight())){
+			g.drawImage(exitOn, width/2 - exitOn.getWidth()/2, 490, exitOn.getWidth(), exitOn.getHeight(), null);
+			if (InputHandler.MousePressed == 1){
+				clickCheck();
+				frame.dispose();
+				new PlayMenuGui();
+				stop();
+			}
+		}else{
+			g.drawImage(exitOff, width/2 - exitOff.getWidth()/2, 500, exitOff.getWidth(), exitOff.getHeight(), null);
+		}
 	}
 
 	private void renderPause() {
 		frame.getContentPane().setCursor(null);
 		g.drawImage(img, 0, 0, getWidth(), getHeight(), null);
+		g.drawImage(filter, 0, 0, getWidth(), getHeight(), null);
 		timer();
 		renderResume();
 		renderRestart();
@@ -248,6 +272,9 @@ public class Display extends Canvas implements Runnable {
 			optionsOn = ImageIO.read(Display.class.getResource("/textures/optionsOn.png"));
 			quitOff = ImageIO.read(Display.class.getResource("/textures/quitOff.png"));
 			quitOn = ImageIO.read(Display.class.getResource("/textures/quitOn.png"));
+			exitOff = ImageIO.read(Display.class.getResource("/textures/exitOff.png"));
+			exitOn = ImageIO.read(Display.class.getResource("/textures/exitOn.png"));
+			filter = ImageIO.read(Display.class.getResource("/textures/filter.png"));
 			cursor = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
 		} catch (IOException e) {
 			e.printStackTrace();

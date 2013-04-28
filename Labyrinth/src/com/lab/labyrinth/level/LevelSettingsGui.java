@@ -263,7 +263,7 @@ public class LevelSettingsGui extends JFrame {
 			}
 			
 			for(int i = 0;i<3;i++) {
-				rankings.add("None,  00 : 00");
+				rankings.add("None  00 : 00");
 			}
 
 			create.setLvlWidth(lvlWidth);
