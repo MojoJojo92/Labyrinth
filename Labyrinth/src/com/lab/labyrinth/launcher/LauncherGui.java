@@ -20,15 +20,13 @@ public class LauncherGui extends Canvas implements Runnable {
 	private static final long serialVersionUID = 1L;
 	private static int WIDTH = 800;
 	private static int HEIGHT = 400;
-	private String username;
 	private boolean running = false;
 	private Thread thread;
 	private JFrame frame;
 	private Graphics g;
 	private BufferedImage background, pointer, playOn, playOff, createOn, createOff, optionsOn, optionsOff, exitOn, exitOff;
 
-	public LauncherGui(String username) {
-		this.username = username;
+	public LauncherGui() {
 
 		frame = new JFrame();
 		frame.setUndecorated(true);
@@ -104,7 +102,7 @@ public class LauncherGui extends Canvas implements Runnable {
 			g.drawImage(pointer, 740, 100, 40, 40, null);
 			if (InputHandler.MousePressed == 1) {
 				frame.dispose();
-				new PlayMenuGui(username);
+				new PlayMenuGui();
 				stopLauncher();
 				clickCheck();
 			}
@@ -119,7 +117,7 @@ public class LauncherGui extends Canvas implements Runnable {
 			g.drawImage(pointer, 740, 160, 40, 40, null);
 			if (InputHandler.MousePressed == 1) {
 				frame.dispose();
-				new LevelCreate(username);
+				new LevelCreate();
 				stopLauncher();
 				clickCheck();
 			}

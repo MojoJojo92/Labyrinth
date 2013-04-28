@@ -14,6 +14,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.border.BevelBorder;
 
+import com.lab.labyrinth.account.AccountGui;
+
 import java.awt.Font;
 import java.io.File;
 import java.util.ArrayList;
@@ -272,7 +274,7 @@ public class LevelSettingsGui extends JFrame {
 			create.setSecTime(secSlider.getValue());
 			create.setMinBest(0);
 			create.setSecBest(0);
-			create.setLevelName(nameTF.getText() + "_" + create.getUsername());
+			create.setLevelName(nameTF.getText() + "_" + AccountGui.Username);
 			create.setGo(true);
 			create.setRankings(rankings);
 
@@ -311,7 +313,7 @@ public class LevelSettingsGui extends JFrame {
 
 	private boolean checkFileName() {
 
-		File file = new File("res/levels/" + nameTF.getText() + "_" + create.getUsername() + ".ser");
+		File file = new File("res/levels/" + nameTF.getText() + "_" + AccountGui.Username + ".ser");
 		if (file.exists()) {
 			JOptionPane.showMessageDialog(frame, "The level name already exists ", "Error", JOptionPane.ERROR_MESSAGE);
 			return false;

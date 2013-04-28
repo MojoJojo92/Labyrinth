@@ -20,7 +20,7 @@ public class Controller {
 	public double z, x;
 	public boolean go = false;
 
-	public void tick(boolean forward, boolean back, boolean left, boolean right, boolean jump, boolean crouch, boolean run, boolean rLeft, boolean rRight) {
+	public void tick(boolean forward, boolean back, boolean left, boolean right, boolean jump, boolean crouch, boolean run, boolean rLeft, boolean rRight, boolean pause) {
 		double rotationSpeedA = 0.0003 * Display.mouseSpeed;
 		double rotationSpeedB = 0.008;
 		double walkSpeed = 0.55;
@@ -75,6 +75,8 @@ public class Controller {
 
 		if (jump) {
 			y += jumpHeight;
+			Display.game.setPlay(true);
+			Display.game.setPause(false);
 		}
 
 		if (crouch) {
@@ -104,6 +106,11 @@ public class Controller {
 
 		if (!crouch) {
 			crouchBobbing = false;
+		}
+		
+		if(pause){
+			Display.game.setPlay(false);
+			Display.game.setPause(true);
 		}
 
 		xa += (xMove * Math.cos(rotation) + zMove * Math.sin(rotation)) * walkSpeed;

@@ -52,7 +52,7 @@ public class OptionsConfiguration {
 
 	public void loadConfiguration(String path) {
 		try {
-			File file = new File("res/settings/config.xml");
+			File file = new File(path);
 			if (!file.exists())
 				saveConfiguration(50, 50, 50, "W", "S", "D", "A", "RIGHT", "LEFT", "SHIFT", "SPACE", "res/settings/config.xml");
 			InputStream read = new FileInputStream(path);

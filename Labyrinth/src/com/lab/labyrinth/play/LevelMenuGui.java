@@ -28,7 +28,6 @@ public class LevelMenuGui extends Canvas implements Runnable {
 	private JFrame frame;
 	private Graphics g;
 	private BufferedImage background, playBtn, backBtn, arrowUp, arrowDown, select;
-	private String username;
 	private int choice;
 	private String[] levelNames;
 	private ArrayList<String> nameList;
@@ -36,8 +35,7 @@ public class LevelMenuGui extends Canvas implements Runnable {
 	private int nameIndex, selectedIndex;
 	private boolean[] selected;
 
-	public LevelMenuGui(String username, int choice) {
-		this.username = username;
+	public LevelMenuGui(int choice) {
 		this.choice = choice;
 
 		frame = new JFrame();
@@ -133,7 +131,7 @@ public class LevelMenuGui extends Canvas implements Runnable {
 			g.drawImage(backBtn, 305, 560, backBtn.getWidth(), backBtn.getHeight(), null);
 			if (InputHandler.MousePressed == 1) {
 				clickCheck();
-				new PlayMenuGui(username);
+				new PlayMenuGui();
 				frame.dispose();
 				stopCustomLevelsGui();
 			}

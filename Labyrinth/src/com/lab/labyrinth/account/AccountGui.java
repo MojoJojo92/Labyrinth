@@ -18,6 +18,7 @@ import java.awt.event.ActionListener;
 public class AccountGui extends JFrame {
 
 	private static final long serialVersionUID = 1L;
+	public static String Username;
 	private JFrame frame;
 	private JPanel panel_0, panel_1, panel_2;
 	private JButton btnLogIn, btnCreate;
@@ -119,15 +120,16 @@ public class AccountGui extends JFrame {
 
 	public class ButtonListenerLogin implements ActionListener {
 		public void actionPerformed(ActionEvent arg0) {
-			String username = textField_0.getText(), pass = "";
+			String pass = "";
+			Username = textField_0.getText();
 			char[] password = passwordField_0.getPassword();
 
 			for (int i = 0; i < password.length; i++) {
 				pass += password[i];
 			}
-			AccountSerialization serialize = new AccountSerialization(username, pass);
+			AccountSerialization serialize = new AccountSerialization(Username, pass);
 			if (serialize.LogIn()) {
-				new LauncherGui(username);
+				new LauncherGui();
 				frame.dispose();
 			}
 		}
@@ -136,9 +138,10 @@ public class AccountGui extends JFrame {
 	public class ButtonListenerCreate implements ActionListener {
 		public void actionPerformed(ActionEvent arg0) {
 
-			String username = textField_1.getText(), pass1 = "", pass2 = "";
+			String pass1 = "", pass2 = "";
 			char[] password1 = passwordField_1.getPassword();
 			char[] password2 = passwordField_2.getPassword();
+			Username = textField_0.getText();
 
 			for (int i = 0; i < password1.length; i++) {
 				pass1 += password1[i];
@@ -147,16 +150,16 @@ public class AccountGui extends JFrame {
 				pass2 += password2[i];
 			}
 
-			if (username.equals("")) {
+			if (Username.equals("")) {
 				JOptionPane.showMessageDialog(frame, "You must fill all the gaps", "Error", JOptionPane.ERROR_MESSAGE);
 			} else if (pass1.length() < 5) {
 				JOptionPane.showMessageDialog(frame, "Password must be at least 5 characters", "Error", JOptionPane.ERROR_MESSAGE);
 			} else if (!(pass1.equals(pass2))) {
 				JOptionPane.showMessageDialog(frame, "Passwords don't match", "Error", JOptionPane.ERROR_MESSAGE);
 			} else {
-				AccountSerialization serialize = new AccountSerialization(username, pass1);
+				AccountSerialization serialize = new AccountSerialization(Username, pass1);
 				if (serialize.Create()) {
-					new LauncherGui(username);
+					new LauncherGui();
 					frame.dispose();
 				}
 			}

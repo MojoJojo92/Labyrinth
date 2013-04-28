@@ -13,9 +13,7 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
-import com.lab.labyrinth.graphics.Display;
 import com.lab.labyrinth.input.InputHandler;
-import com.lab.labyrinth.launcher.LauncherGui;
 import com.lab.labyrinth.level.Level;
 import com.lab.labyrinth.level.LevelSerialization;
 
@@ -28,14 +26,12 @@ public class RankingsGui extends Canvas implements Runnable {
 	private boolean running = false;
 	private JFrame frame;
 	private Graphics g;
-	private BufferedImage background, playBtn, backBtn,arrowUp,arrowDown;
-	private String username;
+	private BufferedImage background,backBtn,arrowUp,arrowDown;
 	private ArrayList<String> levelNames;
 	private int nameIndex;
 	private Level[] levels;
 
-	public RankingsGui(String username) {
-		this.username = username;
+	public RankingsGui() {
 
 		frame = new JFrame();
 		frame.setTitle("Labyrinth");
@@ -139,7 +135,7 @@ public class RankingsGui extends Canvas implements Runnable {
 			g.drawImage(backBtn, 305, 548, backBtn.getWidth(), backBtn.getHeight(), null);
 			if (InputHandler.MousePressed == 1) {
 				clickCheck();
-				new PlayMenuGui(username);
+				new PlayMenuGui();
 				frame.dispose();
 				stopCustomLevelsGui();
 			}
@@ -173,11 +169,10 @@ public class RankingsGui extends Canvas implements Runnable {
 
 	private void loadImages() {
 		try {
-			background = ImageIO.read(PlayMenuGui.class.getResource("/textures/rankingsBackground.png"));
-			playBtn = ImageIO.read(PlayMenuGui.class.getResource("/textures/play.png"));
-			backBtn = ImageIO.read(PlayMenuGui.class.getResource("/textures/back.png"));
-			arrowUp = ImageIO.read(PlayMenuGui.class.getResource("/create/arrow_d.png"));
-			arrowDown = ImageIO.read(PlayMenuGui.class.getResource("/create/arrow_u.png"));
+			background = ImageIO.read(RankingsGui.class.getResource("/textures/rankingsBackground.png"));
+			backBtn = ImageIO.read(RankingsGui.class.getResource("/textures/back.png"));
+			arrowUp = ImageIO.read(RankingsGui.class.getResource("/create/arrow_d.png"));
+			arrowDown = ImageIO.read(RankingsGui.class.getResource("/create/arrow_u.png"));
 
 		} catch (IOException e) {
 			e.printStackTrace();

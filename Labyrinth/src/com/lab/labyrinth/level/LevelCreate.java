@@ -15,6 +15,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import com.lab.labyrinth.account.AccountGui;
 import com.lab.labyrinth.input.InputHandler;
 import com.lab.labyrinth.launcher.LauncherGui;
 
@@ -32,13 +33,12 @@ public class LevelCreate extends Canvas implements Runnable {
 	private boolean running = false, draw = false, go = true;
 	private int nameIndex, selectedIndex;
 
-	private String username, levelName;
+	private String levelName;
 	private int lvlWidth, lvlHeight, spawnX, spawnY, blocks, minTime, secTime, minBest, secBest;
 	private int[][] flag;
 	private ArrayList<String> rankings;
 
-	public LevelCreate(String username) {
-		this.username = username;
+	public LevelCreate() {
 		frame = new JFrame();
 		frame.setTitle("Custom Level");
 		frame.setSize(new Dimension(WIDTH, HEIGHT));
@@ -138,7 +138,7 @@ public class LevelCreate extends Canvas implements Runnable {
 			if (InputHandler.MousePressed == 1) {
 				clickCheck();
 				frame.dispose();
-				new LauncherGui(username);
+				new LauncherGui();
 				stopCreate();
 			}
 		}
@@ -387,10 +387,10 @@ public class LevelCreate extends Canvas implements Runnable {
 		if (InputHandler.MousePressed == 1) {
 			clickCheck();
 			if (contains(4)) {
-				File file = new File("res/levels/" + levelName + "_" + username + ".ser");
+				File file = new File("res/levels/" + levelName + "_" + AccountGui.Username + ".ser");
 				if (file.exists())
 					file.delete();
-				Level level = new Level(username, levelName, flag, minTime, secTime, minBest, secBest, blocks, spawnX, spawnY, lvlWidth, lvlHeight, rankings);
+				Level level = new Level(AccountGui.Username, levelName, flag, minTime, secTime, minBest, secBest, blocks, spawnX, spawnY, lvlWidth, lvlHeight, rankings);
 				new LevelSerialization(level);
 				updateNames();
 				selected(lastName());
@@ -402,10 +402,10 @@ public class LevelCreate extends Canvas implements Runnable {
 
 	private void deleteBtnListener() {
 		if (InputHandler.MousePressed == 1) {
-			File file = new File("res/levels/" + names[selectedIndex] + "_" + username + ".ser");
+			File file = new File("res/levels/" + names[selectedIndex] + "_" + AccountGui.Username + ".ser");
 			file.delete();
-			System.out.println(names[selectedIndex] + "_" + username);
-			nameList.remove(names[selectedIndex] + "_" + username);
+			System.out.println(names[selectedIndex] + "_" + AccountGui.Username);
+			nameList.remove(names[selectedIndex] + "_" + AccountGui.Username);
 			LevelSerialization serialize = new LevelSerialization();
 			serialize.serializeNames(nameList);
 			selected[selectedIndex] = false;
@@ -460,7 +460,7 @@ public class LevelCreate extends Canvas implements Runnable {
 		LevelSerialization serialize = new LevelSerialization();
 		nameList = serialize.deserializeNames();
 		for (int i = 0; i < nameList.size(); i++)
-			if (nameList.get(i).endsWith("_" + username)) {
+			if (nameList.get(i).endsWith("_" + AccountGui.Username)) {
 				names[j] = nameList.get(i).substring(0, nameList.get(i).lastIndexOf("_"));
 				j++;
 			}
@@ -468,7 +468,7 @@ public class LevelCreate extends Canvas implements Runnable {
 
 	private void updateMap() {
 		LevelSerialization serialize = new LevelSerialization();
-		ArrayList<Level> level = serialize.deserializeLevel(names[selectedIndex] + "_" + username);
+		ArrayList<Level> level = serialize.deserializeLevel(names[selectedIndex] + "_" + AccountGui.Username);
 		flag = level.get(0).getFlag();
 		levelName = level.get(0).getName();
 		minTime = level.get(0).getMinTimeLimit();
@@ -547,10 +547,6 @@ public class LevelCreate extends Canvas implements Runnable {
 
 	public void setLevelName(String levelName) {
 		this.levelName = levelName;
-	}
-
-	public String getUsername() {
-		return username;
 	}
 
 	public void setGo(boolean go) {

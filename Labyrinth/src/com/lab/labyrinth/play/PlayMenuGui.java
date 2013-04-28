@@ -23,10 +23,8 @@ public class PlayMenuGui extends Canvas implements Runnable {
 	private JFrame frame;
 	private Graphics g;
 	private BufferedImage background, standardLvlBtn, customLvlBtn, rankingsBtn, backBtn;
-	private String username;
 
-	public PlayMenuGui(String username) {
-		this.username = username;
+	public PlayMenuGui() {
 		
 		frame = new JFrame();
 		frame.setTitle("Labyrinth");
@@ -91,7 +89,7 @@ public class PlayMenuGui extends Canvas implements Runnable {
 			g.drawImage(standardLvlBtn, 305, 243, standardLvlBtn.getWidth(), standardLvlBtn.getHeight(), null);
 			if (InputHandler.MousePressed == 1) {
 				clickCheck();
-				new LevelMenuGui(username, 1);	
+				new LevelMenuGui(1);	
 				frame.dispose();
 				stopPlayMenu();
 			}
@@ -103,7 +101,7 @@ public class PlayMenuGui extends Canvas implements Runnable {
 			g.drawImage(customLvlBtn, 305, 315, customLvlBtn.getWidth(), customLvlBtn.getHeight(), null);
 			if (InputHandler.MousePressed == 1) {
 				clickCheck();
-				new LevelMenuGui(username, 2);	
+				new LevelMenuGui(2);	
 				frame.dispose();
 				stopPlayMenu();
 			}
@@ -115,7 +113,7 @@ public class PlayMenuGui extends Canvas implements Runnable {
 			g.drawImage(rankingsBtn, 305, 315+72, rankingsBtn.getWidth(), rankingsBtn.getHeight(), null);
 			if (InputHandler.MousePressed == 1) {
 				clickCheck();
-				new RankingsGui(username);	
+				new RankingsGui();	
 				frame.dispose();
 				stopPlayMenu();
 				
@@ -128,7 +126,7 @@ public class PlayMenuGui extends Canvas implements Runnable {
 			g.drawImage(backBtn, 305,315+144, backBtn.getWidth(), backBtn.getHeight(), null);
 			if (InputHandler.MousePressed == 1) {
 				clickCheck();
-				new LauncherGui(username);
+				new LauncherGui();
 				stopPlayMenu();
 				frame.dispose();
 				

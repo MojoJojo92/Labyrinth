@@ -3,26 +3,21 @@ package com.lab.labyrinth.graphics;
 import java.util.ArrayList;
 
 import com.lab.labyrinth.input.Controller;
-import com.lab.labyrinth.input.Game;
 
 public class Render3D extends Render {
 
 	public double zBuffer[];
 	public double zBufferWall[];
-	private double renderDistance;
 	public static double cosine, sine, up, bobbing, xx, yy, z;
 	public static double forward, sideways;
 	public ArrayList<Detection> detectionList = new ArrayList<Detection>();
 	private int xPix = 0, yPix = 0;
-	private Game game;
 
-	public Render3D(ArrayList<Detection> detectionList, Game game, int width, int height) {
+	public Render3D(ArrayList<Detection> detectionList,int width, int height) {
 		super(width, height);
 		this.detectionList = detectionList;
-		this.game = game;
 		zBuffer = new double[width * height];
 		zBufferWall = new double[width];
-		renderDistance = 5500;
 	}
 
 	public void floor() {
@@ -32,22 +27,22 @@ public class Render3D extends Render {
 
 		double ceilingPosition = 16;
 		double floorPosition = 8;
-		forward = game.controls.z;
-		sideways = game.controls.x;
-		up = game.controls.y;
+		forward = Display.game.controls.z;
+		sideways = Display.game.controls.x;
+		up = Display.game.controls.y;
 
-		double rotation = game.controls.rotation;
+		double rotation = Display.game.controls.rotation;
 		cosine = Math.cos(rotation);
 		sine = Math.sin(rotation);
 
 		for (int y = 0; y < height; y++) {
 			double ceiling = (y + -height / 2.0) / height;
 			if (Controller.walkBobbing) {
-				bobbing = Math.sin(game.time / 5.0) * 0.5;
+				bobbing = Math.sin(Display.game.time / 5.0) * 0.5;
 			} else if (Controller.runBobbing) {
-				bobbing = (Math.sin(game.time / 5.0) * 0.5) * 2;
+				bobbing = (Math.sin(Display.game.time / 5.0) * 0.5) * 2;
 			} else if (Controller.crouchBobbing) {
-				bobbing = (Math.sin(game.time / 5.0) * 0.1) / 4;
+				bobbing = (Math.sin(Display.game.time / 5.0) * 0.1) / 4;
 			} else {
 				bobbing = 0;
 			}
@@ -74,7 +69,7 @@ public class Render3D extends Render {
 				detectionList.get(i).detectCollision();
 		}
 		if(detectionList.get(detectionList.size()-1).detectFinish())
-			System.out.println(true);
+			Display.finish = true;
 	}
 
 	public void walls(double xLeft, double xRight, double zDistanceRight, double zDistanceLeft, double yHeight) {
@@ -181,7 +176,7 @@ public class Render3D extends Render {
 	public void renderDistancelimiter() {
 		for (int i = 0; i < width * height; i++) {
 			int colour = pixels[i];
-			int brightness = (int) (renderDistance / zBuffer[i]);
+			int brightness = (int) (Display.game.getRenderDistance() / zBuffer[i]);
 
 			if (brightness < 0) {
 				brightness = 0;

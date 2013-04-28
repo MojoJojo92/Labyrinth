@@ -2,26 +2,23 @@ package com.lab.labyrinth.graphics;
 
 import java.util.ArrayList;
 
-import com.lab.labyrinth.input.Game;
 import com.lab.labyrinth.level.Level;
 
 public class Screen extends Render {
 
-	private Game game;
 	private Render3D render3D;
 	private Level level;
 	private ArrayList<Detection> detectionList;
 	private int renderDistance = 500;
 	private int spawnX, spawnY, finishX, finishY;
 
-	public Screen(Game game, Level level, int width, int height) {
+	public Screen(Level level, int width, int height) {
 		super(width, height);
 		this.level = level;
-		this.game = game;
 		findSpawnFinish();
 		constructDetection();
 		finishBlock((finishX - spawnX - 1) * 3,(finishY - spawnY - 1) * 3);
-		render3D = new Render3D(detectionList, this.game, width, height);
+		render3D = new Render3D(detectionList, width, height);
 	}
 
 	public void render() {
@@ -33,7 +30,6 @@ public class Screen extends Render {
 		for (int i = 0; i < level.getLvlWidth(); i++)
 			for (int j = 0; j < level.getLvlHeight(); j++)
 				findBlocks(i, j);
-		//fullBlock(3,3);
 
 		render3D.renderDistancelimiter();
 		draw(render3D, 0, 0);
@@ -59,7 +55,7 @@ public class Screen extends Render {
 	}
 
 	private void finishBlock(int i, int j) {
-		detectionList.add(new Detection(game, i, j));
+		detectionList.add(new Detection(i, j));
 	}
 
 	private void constructDetection() {
@@ -67,7 +63,7 @@ public class Screen extends Render {
 		for (int i = 0; i < level.getLvlWidth(); i++)
 			for (int j = 0; j < level.getLvlHeight(); j++)
 				if (level.getFlag()[i][j] == 1 || level.getFlag()[i][j] == 2)
-					detectionList.add(new Detection(game, ((i - spawnX) - 1) * 3, ((j - spawnY) - 1) * 3));
+					detectionList.add(new Detection(((i - spawnX) - 1) * 3, ((j - spawnY) - 1) * 3));
 	}
 
 	private void findSpawnFinish() {
