@@ -169,42 +169,70 @@ public class LevelCreate extends Canvas implements Runnable {
 	}
 
 	private void renderArrows() {
-		if (mouseIn(390, 390 + 20, 281, 281 + 55)) {
-			g.drawImage(arrowL, 385, 275, 35, 70, null);
-			if (InputHandler.MousePressed == 1)
-				arrowPressed("L");
-		}
+		renderUpArrow();
+		renderDownArrow();
+		renderLeftArrow();
+		renderRightArrow();
+		renderUpListArrow();
+		renderDownListArrow();
+	}
 
-		if (mouseIn(950, 950 + 20, 281, 281 + 55)) {
-			g.drawImage(arrowR, 940, 275, 35, 70, null);
-			if (InputHandler.MousePressed == 1)
-				arrowPressed("R");
-		}
-
+	private void renderUpArrow() {
 		if (mouseIn(651, 651 + 55, 23, 23 + 20)) {
 			g.drawImage(arrowU, 643, 15, 70, 35, null);
 			if (InputHandler.MousePressed == 1)
-				arrowPressed("U");
+				if (spawnY > 0)
+					spawnY--;
 		}
+	}
 
+	private void renderDownArrow() {
 		if (mouseIn(651, 651 + 55, 573, 573 + 20)) {
 			g.drawImage(arrowD, 643, 566, 70, 35, null);
 			if (InputHandler.MousePressed == 1)
-				arrowPressed("D");
+				if (spawnY < lvlHeight - 20)
+					spawnY++;
 		}
+	}
 
-		if (mouseIn(89, 88 + 55, 24, 24 + 20)) {
+	private void renderLeftArrow() {
+		if (mouseIn(390, 390 + 20, 281, 281 + 55)) {
+			g.drawImage(arrowL, 385, 275, 35, 70, null);
+			if (InputHandler.MousePressed == 1)
+				if (spawnX > 0)
+					spawnX--;
+		}
+	}
+
+	private void renderRightArrow() {
+		if (mouseIn(950, 950 + 20, 281, 281 + 55)) {
+			g.drawImage(arrowR, 940, 275, 35, 70, null);
+			if (InputHandler.MousePressed == 1)
+				if (spawnX < lvlWidth - 20)
+					spawnX++;
+		}
+	}
+
+	private void renderUpListArrow() {
+		if (mouseIn(89, 88 + 55, 24, 24 + 20)){
 			g.drawImage(arrowU, 81, 15, 70, 35, null);
 			if (InputHandler.MousePressed == 1) {
-				arrowPressed("UL");
+				if (nameIndex > 0) {
+					nameIndex--;
+					clickCheck();
+				}
 			}
-
 		}
+	}
 
-		if (mouseIn(89, 88 + 55, 365, 365 + 20)) {
+	private void renderDownListArrow() {
+		if (mouseIn(89, 88 + 55, 365, 365 + 20)){
 			g.drawImage(arrowD, 81, 365, 70, 35, null);
 			if (InputHandler.MousePressed == 1) {
-				arrowPressed("DL");
+				if (nameIndex < 99) {
+					nameIndex++;
+					clickCheck();
+				}
 			}
 		}
 	}
@@ -229,60 +257,14 @@ public class LevelCreate extends Canvas implements Runnable {
 	}
 
 	private void renderSelect() {
-		if (mouseIn(48, 48 + 138, 48, 48 + 36)) {
-			g.drawImage(select, 48, 48, 138, 36, null);
-			selected(nameIndex + 0);
+		for (int i = 0; i < 9; i++) {
+			if (mouseIn(48, 48 + 138, 48 + 36 * i, 48 + 36 * (i + 1))) {
+				g.drawImage(select, 48, 48 + 36 * i, 138, 36, null);
+				selected(nameIndex + i);
 
-		} else if (selected[nameIndex + 0]) {
-			g.drawImage(select, 48, 48, 138, 36, null);
-		}
-		if (mouseIn(48, 48 + 138, 83, 83 + 36)) {
-			g.drawImage(select, 48, 83, 138, 36, null);
-			selected(nameIndex + 1);
-		} else if (selected[nameIndex + 1]) {
-			g.drawImage(select, 48, 83, 138, 36, null);
-		}
-		if (mouseIn(48, 48 + 138, 119, 119 + 36)) {
-			g.drawImage(select, 48, 119, 138, 36, null);
-			selected(nameIndex + 2);
-		} else if (selected[nameIndex + 2]) {
-			g.drawImage(select, 48, 119, 138, 36, null);
-		}
-		if (mouseIn(48, 48 + 138, 155, 155 + 36)) {
-			g.drawImage(select, 48, 155, 138, 36, null);
-			selected(nameIndex + 3);
-		} else if (selected[nameIndex + 3]) {
-			g.drawImage(select, 48, 155, 138, 36, null);
-		}
-		if (mouseIn(48, 48 + 138, 191, 191 + 36)) {
-			g.drawImage(select, 48, 191, 138, 36, null);
-			selected(nameIndex + 4);
-		} else if (selected[nameIndex + 4]) {
-			g.drawImage(select, 48, 191, 138, 36, null);
-		}
-		if (mouseIn(48, 48 + 138, 227, 227 + 36)) {
-			g.drawImage(select, 48, 227, 138, 36, null);
-			selected(nameIndex + 5);
-		} else if (selected[nameIndex + 5]) {
-			g.drawImage(select, 48, 227, 138, 36, null);
-		}
-		if (mouseIn(48, 48 + 138, 263, 263 + 36)) {
-			g.drawImage(select, 48, 263, 138, 36, null);
-			selected(nameIndex + 6);
-		} else if (selected[nameIndex + 6]) {
-			g.drawImage(select, 48, 263, 138, 36, null);
-		}
-		if (mouseIn(48, 48 + 138, 298, 298 + 36)) {
-			g.drawImage(select, 48, 298, 138, 37, null);
-			selected(nameIndex + 7);
-		} else if (selected[nameIndex + 7]) {
-			g.drawImage(select, 48, 298, 138, 37, null);
-		}
-		if (mouseIn(48, 48 + 138, 334, 334 + 36)) {
-			g.drawImage(select, 48, 334, 138, 35, null);
-			selected(nameIndex + 8);
-		} else if (selected[nameIndex + 8]) {
-			g.drawImage(select, 48, 334, 138, 35, null);
+			} else if (selected[nameIndex + i]) {
+				g.drawImage(select, 48, 48 + 36 * i, 138, 36, null);
+			}
 		}
 	}
 
@@ -342,26 +324,7 @@ public class LevelCreate extends Canvas implements Runnable {
 		}
 		return false;
 	}
-
-	private void arrowPressed(String arrow) {
-		if (arrow.equals("L") && spawnX > 0)
-			spawnX--;
-		else if (arrow.equals("R") && spawnX < lvlWidth - 20)
-			spawnX++;
-		else if (arrow.equals("U") && spawnY > 0)
-			spawnY--;
-		else if (arrow.equals("D") && spawnY < lvlHeight - 20)
-			spawnY++;
-		else if (arrow.equals("UL") && nameIndex > 0) {
-			nameIndex--;
-			clickCheck();
-		} else if (arrow.equals("DL") && nameIndex < 99) {
-			nameIndex++;
-			clickCheck();
-		}
-
-	}
-
+	
 	private boolean mouseIn(int xS, int xF, int yS, int yF) {
 		if (InputHandler.MouseX <= xS)
 			return false;

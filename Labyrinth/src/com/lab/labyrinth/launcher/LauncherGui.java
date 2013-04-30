@@ -13,7 +13,7 @@ import javax.swing.JFrame;
 
 import com.lab.labyrinth.input.InputHandler;
 import com.lab.labyrinth.level.LevelCreate;
-import com.lab.labyrinth.play.PlayMenuGui;
+import com.lab.labyrinth.menu.MainMenuGui;
 
 public class LauncherGui extends Canvas implements Runnable {
 
@@ -102,7 +102,7 @@ public class LauncherGui extends Canvas implements Runnable {
 			g.drawImage(pointer, 740, 100, 40, 40, null);
 			if (InputHandler.MousePressed == 1) {
 				frame.dispose();
-				new PlayMenuGui();
+				new MainMenuGui();
 				stopLauncher();
 				clickCheck();
 			}

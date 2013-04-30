@@ -35,6 +35,7 @@ public class LevelSettingsGui extends JFrame {
 	private int flag[][];
 	private boolean draw = false;
 	private ArrayList<String> rankings;
+	private int x, y, v, z;
 
 	public LevelSettingsGui(LevelCreate create) {
 		this.create = create;
@@ -223,12 +224,8 @@ public class LevelSettingsGui extends JFrame {
 
 	private class ButtonListenerOk implements ActionListener {
 		public void actionPerformed(ActionEvent arg0) {
-
-			int x = xSlider.getValue() - xSlider.getMinimum();
-			int y = ySlider.getValue() - ySlider.getMinimum();
-			int z = xSlider.getMaximum() - xSlider.getValue();
-			int v = ySlider.getMaximum() - ySlider.getValue();
-
+			indexAdjustment();
+			
 			lvlWidth = widthSlider.getValue();
 			lvlHeight = heightSlider.getValue();
 			spawnX = xSlider.getValue();
@@ -237,34 +234,8 @@ public class LevelSettingsGui extends JFrame {
 			flag = new int[lvlWidth][lvlHeight];
 			rankings = new ArrayList<String>();
 
-			if (x > 9)
-				x = 9;
-			if (x < 0)
-				x = 0;
-			if (y > 9)
-				y = 9;
-			if (y < 0)
-				y = 0;
-
-			if (lvlWidth == 20) {
-				if (z < 8)
-					x += (x - z - 1);
-			} else {
-				if (z < 8)
-					x += (x - z);
-			}
-
-			if (lvlHeight == 20) {
-				if (v < 8)
-					y += (y - v - 1);
-			} else {
-				if (v < 8)
-					y += (y - v);
-			}
-			
-			for(int i = 0;i<3;i++) {
+			for (int i = 0; i < 3; i++)
 				rankings.add("None  00 : 00");
-			}
 
 			create.setLvlWidth(lvlWidth);
 			create.setLvlHeight(lvlHeight);
@@ -289,6 +260,43 @@ public class LevelSettingsGui extends JFrame {
 			}
 
 		}
+	}
+	
+	private void indexAdjustment(){
+		x = xSlider.getValue() - xSlider.getMinimum();
+		y = ySlider.getValue() - ySlider.getMinimum();
+		z = xSlider.getMaximum() - xSlider.getValue();
+		v = ySlider.getMaximum() - ySlider.getValue();
+		minAdjustments();
+		maxAdjustments();
+	}
+	
+	private void maxAdjustments(){
+		if (lvlWidth == 20) {
+			if (z < 8)
+				x += (x - z - 1);
+		} else {
+			if (z < 8)
+				x += (x - z);
+		}
+
+		if (lvlHeight == 20) {
+			if (v < 8)
+				y += (y - v - 1);
+		} else {
+			if (v < 8)
+				y += (y - v);
+		}
+	}
+	private void minAdjustments(){
+		if (x > 9)
+			x = 9;
+		if (x < 0)
+			x = 0;
+		if (y > 9)
+			y = 9;
+		if (y < 0)
+			y = 0;
 	}
 
 	private void fill(int i, int j) {

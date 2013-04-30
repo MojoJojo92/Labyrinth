@@ -23,7 +23,7 @@ import com.lab.labyrinth.input.InputHandler;
 import com.lab.labyrinth.launcher.OptionsGui;
 import com.lab.labyrinth.level.Level;
 import com.lab.labyrinth.level.LevelSerialization;
-import com.lab.labyrinth.play.PlayMenuGui;
+import com.lab.labyrinth.menu.MainMenuGui;
 
 public class Display extends Canvas implements Runnable {
 
@@ -201,8 +201,7 @@ public class Display extends Canvas implements Runnable {
 		g.drawString("2nd " + level.getRankings().get(1), width / 2 - (("2nd " + level.getRankings().get(1)).length() * 20) / 2, 350);
 		g.drawString("3rd " + level.getRankings().get(2), width / 2 - (("3rd " + level.getRankings().get(2)).length() * 20) / 2, 400);
 		g.setColor(Color.green);
-		g.drawString(Integer.toString(time / 60) + ":" + Integer.toString(time % 60), width / 2 - ((Integer.toString(time / 60) + ":" + Integer.toString(time % 60)).length() * 25) / 2, 150);
-		setRankings();
+		g.drawString(Integer.toString(time / 60) + ":" + Integer.toString(time % 60), width / 2 - ((Integer.toString(time / 60) + ":" + Integer.toString(time % 60)).length() * 25) / 2, 150);;
 		renderQuit();
 	}
 
@@ -212,7 +211,6 @@ public class Display extends Canvas implements Runnable {
 		g.drawImage(filter, 0, 0, getWidth(), getHeight(), null);
 		g.setColor(Color.orange);
 		g.drawString("Out of time", width / 2 - ("Out of time".length() * 25) / 2, 100);
-		renderRestart();
 		renderQuit();
 	}
 
@@ -270,9 +268,11 @@ public class Display extends Canvas implements Runnable {
 		if (mouseIn(width / 2 - (quitOn.getWidth()) / 2, width / 2 - (quitOn.getWidth()) / 2 + quitOn.getWidth(), 410, 410 + quitOn.getHeight())) {
 			g.drawImage(quitOn, width / 2 - (quitOn.getWidth()) / 2, 400, quitOn.getWidth(), quitOn.getHeight(), null);
 			if (InputHandler.MousePressed == 1) {
+				if (time > 0)
+					setRankings();
 				clickCheck();
 				frame.dispose();
-				new PlayMenuGui();
+				new MainMenuGui();
 				stop();
 			}
 		} else {
@@ -330,11 +330,11 @@ public class Display extends Canvas implements Runnable {
 	private void countdownTimer() {
 		g.setFont(new Font("Verdana", 3, 100));
 		g.setColor(Color.red);
-		if ((3 - tickCount / 60) > 0){
+		if ((3 - tickCount / 60) > 0) {
 			g.drawString(Integer.toString(3 - tickCount / 60), 400, 310);
-		}else{
+		} else {
 			g.setColor(Color.green);
-			g.drawString("GO!", 370, 310);
+			g.drawString("GO!", 360, 310);
 		}
 		if ((3 - tickCount / 60) == -1) {
 			game.setCountdown(false);
