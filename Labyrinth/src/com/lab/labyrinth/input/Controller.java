@@ -3,109 +3,25 @@ package com.lab.labyrinth.input;
 import com.lab.labyrinth.graphics.Display;
 
 public class Controller {
+	
+	private double z, x, y, rotation, xa, za, rotationa;
+	private boolean walkBobbing, crouchBobbing, runBobbing;
+	private boolean forward, back, left, right, jump, crouch, run, rLeft, rRight, pause;
+	private double rotationSpeed, walkSpeed, jumpHeight, crouchHeight, xMove, zMove;
 
-	public double xa, za, rotation, rotationa, y, walkMode;
-	public static boolean turnLeft = false;
-	public static boolean turnRight = false;
-	public static boolean turnUp = false;
-	public static boolean turnDown = false;
-	public static boolean walkBobbing = false;
-	public static boolean crouchBobbing = false;
-	public static boolean runBobbing = false;
-	public static boolean collision = false;
-	public static boolean collisionB = false;
-	public static boolean collisionL = false;
-	public static boolean collisionR = false;
-	public static double Z, X;
-	public double z, x;
-	public boolean go = false;
-
-	public void tick(boolean forward, boolean back, boolean left, boolean right, boolean jump, boolean crouch, boolean run, boolean rLeft, boolean rRight, boolean pause) {
-		double rotationSpeedA = 0.0003 * Display.mouseSpeed;
-		double rotationSpeedB = 0.008;
-		double walkSpeed = 0.55;
-		double jumpHeight = 0.5;
-		double crouchHeight = 0.5;
-		double xMove = 0;
-		double zMove = 0;
+	public void tick() {
+		rotationSpeed = 0.008;
+		walkSpeed = 0.55;
+		jumpHeight = 0.5;
+		crouchHeight = 0.5;
+		xMove = 0;
+		zMove = 0;
 
 		if (Display.game.isPlay() && !Display.game.isCountdown()) {
-			if (forward) {
-				if (!collision) {
-					zMove++;
-				}
-				walkBobbing = true;
-			}
-
-			if (back) {
-				if (!collision) {
-					zMove--;
-				}
-				walkBobbing = true;
-			}
-
-			if (left) {
-				if (!collision) {
-					xMove--;
-				}
-				walkBobbing = true;
-			}
-
-			if (right) {
-				if (!collision) {
-					xMove++;
-				}
-				walkBobbing = true;
-			}
-
-			if (rLeft) {
-				rotationa -= rotationSpeedB;
-			}
-
-			if (rRight) {
-				rotationa += rotationSpeedB;
-			}
-
-			if (turnLeft) {
-				rotationa -= rotationSpeedA;
-			}
-
-			if (turnRight) {
-				rotationa += rotationSpeedA;
-			}
-
-			if (jump) {
-				y += jumpHeight;
-			}
-
-			if (crouch) {
-				y -= crouchHeight / 2;
-				walkSpeed = 0.2;
-			}
-
-			if (run) {
-				walkSpeed = 0.8;
-			}
-
-			if (run & (forward || back || left || right)) {
-				runBobbing = true;
-			}
-
-			if (crouch & (forward || back || left || right)) {
-				runBobbing = true;
-			}
-
-			if (!forward && !back && !left && !right && !jump) {
-				walkBobbing = false;
-			}
-
-			if (!run) {
-				runBobbing = false;
-			}
-
-			if (!crouch) {
-				crouchBobbing = false;
-			}
+			position();
+			rotation();
+			bobbing();
+			other();
 		}
 
 		if (pause) {
@@ -118,13 +34,157 @@ public class Controller {
 
 		x += xa;
 		z += za;
-		Z = z;
-		X = x;
 		y *= 0.9;
 		xa *= 0.1;
 		za *= 0.1;
 		rotation += rotationa;
 		rotationa *= 0.8;
 	}
+	
+	private void position(){
+		if (forward) {
+			zMove++;
+			walkBobbing = true;
+		}
+		if (back) {
+			zMove--;
+			walkBobbing = true;
+		}
+		if (left) {
+			xMove--;
+			walkBobbing = true;
+		}
+		if (right) {
+			xMove++;
+			walkBobbing = true;
+		}
+	}
+	
+	private void rotation(){
+		if (rLeft)
+			rotationa -= rotationSpeed;
+		if (rRight)
+			rotationa += rotationSpeed;
+	}
+	
+	private void bobbing(){
+		if (run && walking())
+			runBobbing = true;
+		if (crouch && walking())
+			runBobbing = true;
+		if (!walking())
+			walkBobbing = false;
+		if (!run)
+			runBobbing = false;
+		if (!crouch)
+			crouchBobbing = false;
+	}
+	
+	private boolean walking(){
+		if(forward)
+			return true;
+		if(back)
+			return true;
+		if(left)
+			return true;
+		if(right)
+			return true;
+		return false;
+	}
+	
+	private void other(){
+		if (jump)
+			y += jumpHeight;
 
+		if (crouch) {
+			y -= crouchHeight / 2;
+			walkSpeed = 0.2;
+		}
+		if (run)
+			walkSpeed = 0.8;
+	}
+
+	public void setForward(boolean forward) {
+		this.forward = forward;
+	}
+
+	public void setBack(boolean back) {
+		this.back = back;
+	}
+
+	public void setLeft(boolean left) {
+		this.left = left;
+	}
+
+	public void setRight(boolean right) {
+		this.right = right;
+	}
+
+	public void setJump(boolean jump) {
+		this.jump = jump;
+	}
+
+	public void setCrouch(boolean crouch) {
+		this.crouch = crouch;
+	}
+
+	public void setRun(boolean run) {
+		this.run = run;
+	}
+
+	public void setrLeft(boolean rLeft) {
+		this.rLeft = rLeft;
+	}
+
+	public void setrRight(boolean rRight) {
+		this.rRight = rRight;
+	}
+
+	public void setPause(boolean pause) {
+		this.pause = pause;
+	}
+
+	public boolean isWalkBobbing() {
+		return walkBobbing;
+	}
+
+	public boolean isCrouchBobbing() {
+		return crouchBobbing;
+	}
+
+	public boolean isRunBobbing() {
+		return runBobbing;
+	}
+
+	public double getZ() {
+		return z;
+	}
+
+	public void setZ(double z) {
+		this.z = z;
+	}
+
+	public double getX() {
+		return x;
+	}
+
+	public void setX(double x) {
+		this.x = x;
+	}
+
+	public double getY() {
+		return y;
+	}
+
+	public void setY(double y) {
+		this.y = y;
+	}
+
+	public double getRotation() {
+		return rotation;
+	}
+
+	public void setRotation(double rotation) {
+		this.rotation = rotation;
+	}
 }

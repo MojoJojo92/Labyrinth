@@ -110,7 +110,6 @@ public class OptionsGui extends JFrame {
 
 		VolumeListener listener = new VolumeListener();
 		volumeSlider.addChangeListener(listener);
-
 	}
 
 	private void drawSensitivityPanel() {

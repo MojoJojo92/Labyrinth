@@ -9,7 +9,7 @@ public class Screen extends Render {
 	private Render3D render3D;
 	private Level level;
 	private ArrayList<Detection> detectionList;
-	private int renderDistance = 500;
+	private int renderDistance;
 	private int spawnX, spawnY, finishX, finishY;
 
 	public Screen(Level level, int width, int height) {
@@ -19,6 +19,7 @@ public class Screen extends Render {
 		constructDetection();
 		finishBlock((finishX - spawnX - 1) * 3,(finishY - spawnY - 1) * 3);
 		render3D = new Render3D(detectionList, width, height);
+		renderDistance = 500;
 	}
 
 	public void render() {

@@ -15,19 +15,17 @@ import com.lab.labyrinth.input.InputHandler;
 public class MainMenuGui extends Canvas implements Runnable {
 
 	private static final long serialVersionUID = 1L;
-	private static int WIDTH = 900;
-	private static int HEIGHT = 650;
+	private int WIDTH = 900, HEIGHT = 650;
 	private Thread thread;
 	private boolean running = false;
 	private JFrame frame;
 	private Graphics g;
 	private BufferedImage background, side;
-	private double k = 0, j = 0;
-	private int x, y;
+	private double z, v;
+	private int choice, x, y;
 	private PlayMenuGui playMenu;
 	private LevelMenuGui standardLevelMenu, customLevelMenu;
 	private RankingsMenuGui rankingsMenu;
-	private int choice;
 
 	public MainMenuGui() {
 
@@ -37,7 +35,6 @@ public class MainMenuGui extends Canvas implements Runnable {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().add(this);
 		frame.setLocationRelativeTo(null);
-		// frame.setResizable(false);
 		frame.setVisible(true);
 
 		InputHandler input = new InputHandler();
@@ -46,6 +43,8 @@ public class MainMenuGui extends Canvas implements Runnable {
 		addMouseListener(input);
 		addMouseMotionListener(input);
 
+		z = 0;
+		v = 0;
 		choice = 0;
 		playMenu = new PlayMenuGui(this);
 		standardLevelMenu = new LevelMenuGui(this, 1);
@@ -85,10 +84,6 @@ public class MainMenuGui extends Canvas implements Runnable {
 			return;
 		}
 		g = bs.getDrawGraphics();
-		k = k + 0.002;
-		j = j + 0.001;
-		x = (int) (Math.sin(k) * 350);
-		y = (int) (Math.cos(j) * 280);
 
 		setImageBorders();
 
@@ -108,8 +103,13 @@ public class MainMenuGui extends Canvas implements Runnable {
 		g.dispose();
 		bs.show();
 	}
-	
-	private void setImageBorders(){
+
+	private void setImageBorders() {
+		z += 0.002;
+		v += 0.001;
+		x = (int) (Math.sin(z) * 350);
+		y = (int) (Math.cos(v) * 280);
+
 		if (x > 350)
 			x = 350;
 		if (x < 350 - (background.getWidth() - frame.getWidth()))

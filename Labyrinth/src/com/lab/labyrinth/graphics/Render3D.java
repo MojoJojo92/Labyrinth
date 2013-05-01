@@ -2,56 +2,55 @@ package com.lab.labyrinth.graphics;
 
 import java.util.ArrayList;
 
-import com.lab.labyrinth.input.Controller;
-
 public class Render3D extends Render {
 
-	public double zBuffer[];
-	public double zBufferWall[];
-	public static double cosine, sine, up, bobbing, xx, yy, z;
+	private double zBuffer[];
+	private double zBufferWall[];
+	private static double cosine, sine, up, bobbing, xx, yy, z;
 	public static double forward, sideways;
-	public ArrayList<Detection> detectionList = new ArrayList<Detection>();
-	private int xPix = 0, yPix = 0;
+	private ArrayList<Detection> detectionList;
+	private double ceilingPosition, floorPosition, ceiling, depth, rotation;
+	private int xPix, yPix;
 
-	public Render3D(ArrayList<Detection> detectionList,int width, int height) {
+	private double xcLeft, zcLeft, rotLeftSideX, yCornerTL, yCornerBL, rotLeftSideZ;
+	private double xcRight, zcRight, rotRightSideX, yCornerTR, yCornerBR, rotRightSideZ;
+	private double tex3o, tex4o, clip, clip0, tex1, tex2, tex3, tex4, xPixelLeft, xPixelRight, yPixelTop, yPixelBottom;
+	private double yPixelLeftTop, yPixelLeftBottom, yPixelRightTop, yPixelRightBottom;
+	private double pixelRotationX, pixelRotationY, zWall;
+	private int xPixelLeftInt, xPixelRightInt, yPixelTopInt, yPixelBottomInt, xTexture, yTexture;
+
+	private int colour, brightness, r, g, b;
+
+	public Render3D(ArrayList<Detection> detectionList, int width, int height) {
 		super(width, height);
+		this.detectionList = new ArrayList<Detection>();
 		this.detectionList = detectionList;
 		zBuffer = new double[width * height];
 		zBufferWall = new double[width];
+		ceilingPosition = 16;
+		floorPosition = 8;
+		xPix = 0;
+		yPix = 0;
 	}
 
 	public void floor() {
-		for (int x = 0; x < width; x++) {
+		for (int x = 0; x < width; x++)
 			zBufferWall[x] = 0;
-		}
-
-		double ceilingPosition = 16;
-		double floorPosition = 8;
-		forward = Display.game.controls.z;
-		sideways = Display.game.controls.x;
-		up = Display.game.controls.y;
-
-		double rotation = Display.game.controls.rotation;
+		forward = Display.game.getControls().getZ();
+		sideways = Display.game.getControls().getX();
+		up = Display.game.getControls().getY();
+		rotation = Display.game.getControls().getRotation();
 		cosine = Math.cos(rotation);
 		sine = Math.sin(rotation);
 
 		for (int y = 0; y < height; y++) {
-			double ceiling = (y + -height / 2.0) / height;
-			if (Controller.walkBobbing) {
-				bobbing = Math.sin(Display.game.time / 5.0) * 0.5;
-			} else if (Controller.runBobbing) {
-				bobbing = (Math.sin(Display.game.time / 5.0) * 0.5) * 2;
-			} else if (Controller.crouchBobbing) {
-				bobbing = (Math.sin(Display.game.time / 5.0) * 0.1) / 4;
-			} else {
-				bobbing = 0;
-			}
+			ceiling = (y + -height / 2.0) / height;
+			setBobbing();
 			z = (floorPosition + up + bobbing) / ceiling;
-			if (ceiling < 0) {
+			if (ceiling < 0)
 				z = (ceilingPosition - up - bobbing) / -ceiling;
-			}
 			for (int x = 0; x < width; x++) {
-				double depth = (x - width / 2.0) / height;
+				depth = (x - width / 2.0) / height;
 				depth *= z;
 				xx = depth * cosine + z * sine;
 				yy = z * cosine - depth * sine;
@@ -61,133 +60,158 @@ public class Render3D extends Render {
 				pixels[x + y * width] = Texture.floor.pixels[(xPix & 15) + (yPix & 15) * 16];
 				if (z > 400)
 					pixels[x + y * width] = 0;
-				if(xPix > detectionList.get(detectionList.size()-1).getX() * 8 - 24 && xPix < detectionList.get(detectionList.size()-1).getX()* 8 +1&& yPix > detectionList.get(detectionList.size()-1).getZ() * 8 -1 && yPix < detectionList.get(detectionList.size()-1).getZ()* 8 + 24)
+				if (playerIn(detectionList.get(detectionList.size() - 1).getX() * 8 - 24, detectionList.get(detectionList.size() - 1).getX() * 8 + 1, detectionList.get(detectionList.size() - 1).getZ() * 8 - 1, detectionList.get(detectionList.size() - 1).getZ() * 8 + 24))
 					pixels[x + y * width] = Texture.finish.pixels[(xPix & 15) + (yPix & 15) * 16];
 			}
-			for (int i = 0; i < detectionList.size()-1; i++)
+			for (int i = 0; i < detectionList.size() - 1; i++)
 				detectionList.get(i).detectCollision();
 		}
-		if(detectionList.get(detectionList.size()-1).detectFinish())
+		if (detectionList.get(detectionList.size() - 1).detectFinish())
 			Display.game.setFinish(true);
+	}
+
+	private boolean playerIn(int x, int y, int z, int v) {
+		if (xPix < x)
+			return false;
+		if (xPix > y)
+			return false;
+		if (yPix < z)
+			return false;
+		if (yPix > v)
+			return false;
+		return true;
+	}
+
+	private void setBobbing() {
+		if (Display.game.getControls().isWalkBobbing())
+			bobbing = Math.sin(Display.game.getTime() / 5.0) * 0.5;
+		else if (Display.game.getControls().isRunBobbing())
+			bobbing = (Math.sin(Display.game.getTime() / 5.0) * 0.5) * 2;
+		else if (Display.game.getControls().isCrouchBobbing())
+			bobbing = (Math.sin(Display.game.getTime() / 5.0) * 0.1) / 4;
+		else
+			bobbing = 0;
 	}
 
 	public void walls(double xLeft, double xRight, double zDistanceRight, double zDistanceLeft, double yHeight) {
 
-		double xcLeft = ((xLeft / 2) - (sideways / 16.0)) * 2.0;
-		double zcLeft = ((zDistanceLeft / 2) - (forward / 16.0)) * 2.0;
-		double rotLeftSideX = xcLeft * cosine - zcLeft * sine;
-		double yCornerTL = ((-(yHeight / 2)) - (-up / 16.0) + (bobbing / 16.0)) * 2.0;
-		double yCornerBL = ((0.5 - (yHeight / 2)) - (-up / 16.0) + (bobbing / 16.0)) * 2.0;
-		double rotLeftSideZ = zcLeft * cosine + xcLeft * sine;
+		xcLeft = ((xLeft / 2) - (sideways / 16.0)) * 2.0;
+		zcLeft = ((zDistanceLeft / 2) - (forward / 16.0)) * 2.0;
+		rotLeftSideX = xcLeft * cosine - zcLeft * sine;
+		yCornerTL = ((-(yHeight / 2)) - (-up / 16.0) + (bobbing / 16.0)) * 2.0;
+		yCornerBL = ((0.5 - (yHeight / 2)) - (-up / 16.0) + (bobbing / 16.0)) * 2.0;
+		rotLeftSideZ = zcLeft * cosine + xcLeft * sine;
 
-		double xcRight = ((xRight / 2) - (sideways / 16.0)) * 2.0;
-		double zcRight = ((zDistanceRight / 2) - (forward / 16.0)) * 2.0;
-		double rotRightSideX = xcRight * cosine - zcRight * sine;
-		double yCornerTR = ((-(yHeight / 2)) - (-up / 16.0) + (bobbing / 16.0)) * 2.0;
-		double yCornerBR = ((0.5 - (yHeight / 2)) - (-up / 16.0) + (bobbing / 16.0)) * 2.0;
-		double rotRightSideZ = zcRight * cosine + xcRight * sine;
+		xcRight = ((xRight / 2) - (sideways / 16.0)) * 2.0;
+		zcRight = ((zDistanceRight / 2) - (forward / 16.0)) * 2.0;
+		rotRightSideX = xcRight * cosine - zcRight * sine;
+		yCornerTR = ((-(yHeight / 2)) - (-up / 16.0) + (bobbing / 16.0)) * 2.0;
+		yCornerBR = ((0.5 - (yHeight / 2)) - (-up / 16.0) + (bobbing / 16.0)) * 2.0;
+		rotRightSideZ = zcRight * cosine + xcRight * sine;
 
-		double tex3o = 0;
-		double tex4o = 8;
-		double clip = 0.5;
+		tex3o = 0;
+		tex4o = 8;
+		clip = 0.5;
 
-		if (rotLeftSideZ < clip && rotRightSideZ < clip) {
+		if (rotLeftSideZ < clip && rotRightSideZ < clip)
 			return;
-		}
 
-		if (rotLeftSideZ < clip) {
-			double clip0 = (clip - rotLeftSideZ) / (rotRightSideZ - rotLeftSideZ);
-			rotLeftSideZ = rotLeftSideZ + (rotRightSideZ - rotLeftSideZ) * clip0;
-			rotLeftSideX = rotLeftSideX + (rotRightSideX - rotLeftSideX) * clip0;
-			tex3o = tex3o + (tex4o - tex3o) * clip0;
-		}
+		clip();
 
-		if (rotRightSideZ < clip) {
-			double clip0 = (clip - rotLeftSideZ) / (rotRightSideZ - rotLeftSideZ);
-			rotRightSideZ = rotLeftSideZ + (rotRightSideZ - rotLeftSideZ) * clip0;
-			rotRightSideX = rotLeftSideX + (rotRightSideX - rotLeftSideX) * clip0;
-			tex4o = tex3o + (tex4o - tex3o) * clip0;
-		}
-
-		double xPixelLeft = (rotLeftSideX / rotLeftSideZ * height + width / 2.0);
-		double xPixelRight = (rotRightSideX / rotRightSideZ * height + width / 2.0);
-
-		if (xPixelLeft >= xPixelRight) {
+		if (xPixelLeft >= xPixelRight)
 			return;
-		}
 
-		int xPixelLeftInt = (int) xPixelLeft;
-		int xPixelRightInt = (int) xPixelRight;
+		xAdjustment();
 
-		if (xPixelLeftInt < 0) {
-			xPixelLeftInt = 0;
-		}
+		yPixelLeftTop = yCornerTL / rotLeftSideZ * height + height / 2.0;
+		yPixelLeftBottom = yCornerBL / rotLeftSideZ * height + height / 2.0;
+		yPixelRightTop = yCornerTR / rotRightSideZ * height + height / 2.0;
+		yPixelRightBottom = yCornerBR / rotRightSideZ * height + height / 2.0;
 
-		if (xPixelRightInt > width) {
-			xPixelRightInt = width;
-		}
-
-		double yPixelLeftTop = yCornerTL / rotLeftSideZ * height + height / 2.0;
-		double yPixelLeftBottom = yCornerBL / rotLeftSideZ * height + height / 2.0;
-		double yPixelRightTop = yCornerTR / rotRightSideZ * height + height / 2.0;
-		double yPixelRightBottom = yCornerBR / rotRightSideZ * height + height / 2.0;
-
-		double tex1 = 1 / rotLeftSideZ;
-		double tex2 = 1 / rotRightSideZ;
-		double tex3 = tex3o / rotLeftSideZ;
-		double tex4 = tex4o / rotRightSideZ - tex3;
+		tex1 = 1 / rotLeftSideZ;
+		tex2 = 1 / rotRightSideZ;
+		tex3 = tex3o / rotLeftSideZ;
+		tex4 = tex4o / rotRightSideZ - tex3;
 
 		for (int x = xPixelLeftInt; x < xPixelRightInt; x++) {
 
-			double pixelRotation = (x - xPixelLeft) / (xPixelRight - xPixelLeft);
-			double zWall = (tex1 + (tex2 - tex1) * pixelRotation);
+			pixelRotationX = (x - xPixelLeft) / (xPixelRight - xPixelLeft);
+			zWall = (tex1 + (tex2 - tex1) * pixelRotationX);
 
-			if (zBufferWall[x] > zWall) {
+			if (zBufferWall[x] > zWall)
 				continue;
-			}
 			zBufferWall[x] = zWall;
 
-			int xTexture = (int) ((tex3 + tex4 * pixelRotation) / zWall);
-			double yPixelTop = yPixelLeftTop + (yPixelRightTop - yPixelLeftTop) * pixelRotation;
-			double yPixelBottom = yPixelLeftBottom + (yPixelRightBottom - yPixelLeftBottom) * pixelRotation;
+			xTexture = (int) ((tex3 + tex4 * pixelRotationX) / zWall);
+			yPixelTop = yPixelLeftTop + (yPixelRightTop - yPixelLeftTop) * pixelRotationX;
+			yPixelBottom = yPixelLeftBottom + (yPixelRightBottom - yPixelLeftBottom) * pixelRotationX;
 
-			int yPixelTopInt = (int) yPixelTop;
-			int yPixelBottomInt = (int) yPixelBottom;
-
-			if (yPixelTopInt < 0) {
-				yPixelTopInt = 0;
-			}
-
-			if (yPixelBottomInt > height) {
-				yPixelBottomInt = height;
-			}
+			yAdjustment();
 
 			for (int y = yPixelTopInt; y < yPixelBottomInt; y++) {
-				double pixelRotationY = (y - yPixelTop) / (yPixelBottom - yPixelTop);
-				int yTexture = (int) (16 * pixelRotationY);
-
+				pixelRotationY = (y - yPixelTop) / (yPixelBottom - yPixelTop);
+				yTexture = (int) (16 * pixelRotationY);
 				pixels[x + y * width] = Texture.floor.pixels[(xTexture & 15) + (yTexture & 15) * 16];
 				zBuffer[x + y * width] = 1 / zWall * 6;
 			}
 		}
 	}
 
+	private void clip() {
+		if (rotLeftSideZ < clip) {
+			clip0 = (clip - rotLeftSideZ) / (rotRightSideZ - rotLeftSideZ);
+			rotLeftSideZ = rotLeftSideZ + (rotRightSideZ - rotLeftSideZ) * clip0;
+			rotLeftSideX = rotLeftSideX + (rotRightSideX - rotLeftSideX) * clip0;
+			tex3o = tex3o + (tex4o - tex3o) * clip0;
+		}
+
+		if (rotRightSideZ < clip) {
+			clip0 = (clip - rotLeftSideZ) / (rotRightSideZ - rotLeftSideZ);
+			rotRightSideZ = rotLeftSideZ + (rotRightSideZ - rotLeftSideZ) * clip0;
+			rotRightSideX = rotLeftSideX + (rotRightSideX - rotLeftSideX) * clip0;
+			tex4o = tex3o + (tex4o - tex3o) * clip0;
+		}
+
+		xPixelLeft = (rotLeftSideX / rotLeftSideZ * height + width / 2.0);
+		xPixelRight = (rotRightSideX / rotRightSideZ * height + width / 2.0);
+	}
+
+	private void xAdjustment() {
+		xPixelLeftInt = (int) xPixelLeft;
+		xPixelRightInt = (int) xPixelRight;
+
+		if (xPixelLeftInt < 0)
+			xPixelLeftInt = 0;
+
+		if (xPixelRightInt > width)
+			xPixelRightInt = width;
+	}
+
+	private void yAdjustment() {
+		yPixelTopInt = (int) yPixelTop;
+		yPixelBottomInt = (int) yPixelBottom;
+
+		if (yPixelTopInt < 0)
+			yPixelTopInt = 0;
+
+		if (yPixelBottomInt > height)
+			yPixelBottomInt = height;
+	}
+
 	public void renderDistancelimiter() {
 		for (int i = 0; i < width * height; i++) {
-			int colour = pixels[i];
-			int brightness = (int) (Display.game.getRenderDistance() / zBuffer[i]);
+			colour = pixels[i];
+			brightness = (int) (Display.game.getRenderDistance() / zBuffer[i]);
 
-			if (brightness < 0) {
+			if (brightness < 0)
 				brightness = 0;
-			}
 
-			if (brightness > 255) {
+			if (brightness > 255)
 				brightness = 255;
-			}
 
-			int r = (colour >> 16) & 0xff;
-			int g = (colour >> 8) & 0xff;
-			int b = (colour) & 0xff;
+			r = (colour >> 16) & 0xff;
+			g = (colour >> 8) & 0xff;
+			b = (colour) & 0xff;
 
 			r = r * brightness / 255;
 			g = g * brightness / 255;

@@ -17,7 +17,6 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 import com.lab.labyrinth.account.AccountGui;
-import com.lab.labyrinth.input.Controller;
 import com.lab.labyrinth.input.Game;
 import com.lab.labyrinth.input.InputHandler;
 import com.lab.labyrinth.launcher.OptionsGui;
@@ -42,8 +41,7 @@ public class Display extends Canvas implements Runnable {
 	private Cursor blank;
 	private boolean running = false;
 	private int[] pixels, rankings;
-	private int newX = 0, oldX = 0, fps;
-	private int minutes, seconds, fullTime;
+	private int minutes, seconds, fullTime, fps;
 
 	private int frames, tickCount;
 	private double unprossesedSeconds;
@@ -123,19 +121,18 @@ public class Display extends Canvas implements Runnable {
 
 	private void tick() {
 		game.tick(input.key);
-		newX = InputHandler.MouseX;
-		if (newX > oldX) {
-			Controller.turnRight = true;
-		}
-		if (newX < oldX) {
-			Controller.turnLeft = true;
-		}
+		
+		/*newX = InputHandler.MouseX;
+		if (newX > oldX)
+			game.setTurnRight(true);
+		if (newX < oldX)
+			game.setTurnLeft(true);
 		if (newX == oldX) {
-			Controller.turnLeft = false;
-			Controller.turnRight = false;
+			game.setTurnLeft(false);
+			game.setTurnRight(false);
 		}
 		mouseSpeed = Math.abs(newX - oldX);
-		oldX = newX;
+		oldX = newX;*/
 	}
 
 	private void renderGame() {
@@ -152,6 +149,7 @@ public class Display extends Canvas implements Runnable {
 			renderFinish();
 		if (game.isPause())
 			renderPause();
+		//System.out.println(game.isPause());
 
 		g.dispose();
 		bs.show();
@@ -165,7 +163,7 @@ public class Display extends Canvas implements Runnable {
 			pixels[i] = screen.pixels[i];
 		g.drawImage(img, 0, 0, getWidth(), getHeight(), null);
 		if (game.isCountdown()) {
-			countdown();
+			countdownTimer();
 		} else {
 			g.setFont(new Font("Verdana", 3, 20));
 			g.setColor(Color.orange);
@@ -175,17 +173,12 @@ public class Display extends Canvas implements Runnable {
 		}
 	}
 
-	private void countdown() {
-		countdownTimer();
-
-	}
-
 	private void renderFinish() {
 		frame.getContentPane().setCursor(null);
 		game.setPlay(false);
-		if (time > 0) {
+		if (time > 0)
 			renderWin();
-		} else
+		else
 			renderLoose();
 	}
 
@@ -202,7 +195,6 @@ public class Display extends Canvas implements Runnable {
 		g.drawString("3rd " + level.getRankings().get(2), width / 2 - (("3rd " + level.getRankings().get(2)).length() * 20) / 2, 400);
 		g.setColor(Color.green);
 		g.drawString(Integer.toString(time / 60) + ":" + Integer.toString(time % 60), width / 2 - ((Integer.toString(time / 60) + ":" + Integer.toString(time % 60)).length() * 25) / 2, 150);
-		;
 		renderQuit();
 	}
 
@@ -219,7 +211,6 @@ public class Display extends Canvas implements Runnable {
 		frame.getContentPane().setCursor(null);
 		g.drawImage(img, 0, 0, getWidth(), getHeight(), null);
 		g.drawImage(filter, 0, 0, getWidth(), getHeight(), null);
-		timer();
 		renderResume();
 		renderRestart();
 		renderOptions();
@@ -231,8 +222,8 @@ public class Display extends Canvas implements Runnable {
 			g.drawImage(resumeOn, width / 2 - (resumeOn.getWidth()) / 2, 190, resumeOn.getWidth(), resumeOn.getHeight(), null);
 			if (InputHandler.MousePressed == 1) {
 				clickCheck();
+			    game.setPlay(true);
 				game.setPause(false);
-				game.setPlay(true);
 				game.loadOptions();
 			}
 		} else {
@@ -306,7 +297,6 @@ public class Display extends Canvas implements Runnable {
 		while (unprossesedSeconds > 1 / 60.0) {
 			tick();
 			unprossesedSeconds -= 1 / 60.0;
-
 			ticked = true;
 			if (!game.isPause())
 				tickCount++;
@@ -320,10 +310,8 @@ public class Display extends Canvas implements Runnable {
 
 	private void timer() {
 		adjustColor();
-		if (game.isPlay()) {
-			time = fullTime - tickCount / 60;
-			g.drawString(Integer.toString(time / 60) + ":" + Integer.toString(time % 60), 20, 30);
-		}
+		time = fullTime - tickCount / 60;
+		g.drawString(Integer.toString(time / 60) + ":" + Integer.toString(time % 60), 20, 30);
 		if (time == 0)
 			game.setFinish(true);
 	}

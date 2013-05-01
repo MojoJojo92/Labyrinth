@@ -6,9 +6,8 @@ import com.lab.labyrinth.launcher.OptionsConfiguration;
 
 public class Game {
 
-	public int time;
-	public Controller controls;
-	private int renderDistance;
+	private Controller controls;
+	private int renderDistance, time;
 	private boolean play, pause, finish, countdown;
 
 	public Game() {
@@ -18,28 +17,31 @@ public class Game {
 		pause = false;
 		finish = false;
 		countdown = true;
+		time = 0;
 	}
 
 	public void tick(boolean[] key) {
-		time++;
-		boolean forward = key[KeyEvent.VK_W];
-		boolean back = key[KeyEvent.VK_S];
-		boolean left = key[KeyEvent.VK_A];
-		boolean right = key[KeyEvent.VK_D];
-		boolean jump = key[KeyEvent.VK_SPACE];
-		boolean crouch = key[KeyEvent.VK_CONTROL];
-		boolean run = key[KeyEvent.VK_SHIFT];
-		boolean rLeft = key[KeyEvent.VK_LEFT];
-		boolean rRight = key[KeyEvent.VK_RIGHT];
-		boolean pause =  key[KeyEvent.VK_ESCAPE];
-
-		controls.tick(forward, back, left, right, jump, crouch, run, rLeft, rRight, pause);
+		if (!pause)
+			time++;
+		controls.setForward(key[KeyEvent.VK_W]);
+		controls.setBack(key[KeyEvent.VK_S]);
+		controls.setLeft(key[KeyEvent.VK_A]);
+		controls.setRight(key[KeyEvent.VK_D]);
+		controls.setJump(key[KeyEvent.VK_SPACE]);
+		controls.setCrouch(key[KeyEvent.VK_CONTROL]);
+		controls.setRun(key[KeyEvent.VK_SHIFT]);
+		controls.setrRight(key[KeyEvent.VK_RIGHT]);
+		controls.setrLeft(key[KeyEvent.VK_LEFT]);
+		controls.setPause(key[KeyEvent.VK_ESCAPE]);
+		
+		controls.tick();
+		
 	}
-	
-	public void loadOptions(){
+
+	public void loadOptions() {
 		OptionsConfiguration options = new OptionsConfiguration();
 		options.loadConfiguration("res/settings/config.xml");
-		renderDistance = options.getBrightness()*130 + 1000;
+		renderDistance = options.getBrightness() * 130 + 1000;
 	}
 
 	public int getRenderDistance() {
@@ -80,5 +82,13 @@ public class Game {
 
 	public void setCountdown(boolean countdown) {
 		this.countdown = countdown;
+	}
+
+	public int getTime() {
+		return time;
+	}
+
+	public Controller getControls() {
+		return controls;
 	}
 }

@@ -117,5 +117,4 @@ public class OptionsConfiguration {
 	public String getLeft() {
 		return left;
 	}
-
 }
