@@ -214,7 +214,7 @@ public class LevelCreate extends Canvas implements Runnable {
 	}
 
 	private void renderUpListArrow() {
-		if (mouseIn(89, 88 + 55, 24, 24 + 20)){
+		if (mouseIn(89, 88 + 55, 24, 24 + 20)) {
 			g.drawImage(arrowU, 81, 15, 70, 35, null);
 			if (InputHandler.MousePressed == 1) {
 				if (nameIndex > 0) {
@@ -226,7 +226,7 @@ public class LevelCreate extends Canvas implements Runnable {
 	}
 
 	private void renderDownListArrow() {
-		if (mouseIn(89, 88 + 55, 365, 365 + 20)){
+		if (mouseIn(89, 88 + 55, 365, 365 + 20)) {
 			g.drawImage(arrowD, 81, 365, 70, 35, null);
 			if (InputHandler.MousePressed == 1) {
 				if (nameIndex < 99) {
@@ -324,7 +324,7 @@ public class LevelCreate extends Canvas implements Runnable {
 		}
 		return false;
 	}
-	
+
 	private boolean mouseIn(int xS, int xF, int yS, int yF) {
 		if (InputHandler.MouseX <= xS)
 			return false;
@@ -367,7 +367,6 @@ public class LevelCreate extends Canvas implements Runnable {
 		if (InputHandler.MousePressed == 1) {
 			File file = new File("res/levels/" + names[selectedIndex] + "_" + AccountGui.Username + ".ser");
 			file.delete();
-			System.out.println(names[selectedIndex] + "_" + AccountGui.Username);
 			nameList.remove(names[selectedIndex] + "_" + AccountGui.Username);
 			LevelSerialization serialize = new LevelSerialization();
 			serialize.serializeNames(nameList);
@@ -448,7 +447,6 @@ public class LevelCreate extends Canvas implements Runnable {
 			go = false;
 		else
 			go = true;
-		System.out.println(go);
 	}
 
 	private int lastName() {

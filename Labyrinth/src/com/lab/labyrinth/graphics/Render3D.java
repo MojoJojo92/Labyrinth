@@ -59,9 +59,8 @@ public class Render3D extends Render {
 				yPix = (int) (yy + forward);
 				zBuffer[x + y * width] = z;
 				pixels[x + y * width] = Texture.floor.pixels[(xPix & 15) + (yPix & 15) * 16];
-				if (z > 400) {
+				if (z > 400)
 					pixels[x + y * width] = 0;
-				}
 				if(xPix > detectionList.get(detectionList.size()-1).getX() * 8 - 24 && xPix < detectionList.get(detectionList.size()-1).getX()* 8 +1&& yPix > detectionList.get(detectionList.size()-1).getZ() * 8 -1 && yPix < detectionList.get(detectionList.size()-1).getZ()* 8 + 24)
 					pixels[x + y * width] = Texture.finish.pixels[(xPix & 15) + (yPix & 15) * 16];
 			}

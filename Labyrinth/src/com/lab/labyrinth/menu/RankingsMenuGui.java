@@ -65,9 +65,6 @@ public class RankingsMenuGui extends Canvas {
 		levelNames = new ArrayList<String>();
 		LevelSerialization serialize = new LevelSerialization();
 		levelNames = serialize.deserializeNames();
-		for (int i = 0; i < levelNames.size(); i++) {
-			System.out.println(levelNames.get(i));
-		}
 	}
 
 	private void loadLevels() {

@@ -50,7 +50,7 @@ public class LevelSerialization {
 		}
 
 	}
-	
+
 	public void serializeLevel(String levelName) {
 		try {
 			levelPath += levelName + ".ser";
@@ -118,7 +118,6 @@ public class LevelSerialization {
 	public ArrayList<Level> deserializeLevel(String levelName) {
 		ArrayList<Level> temp = null;
 		levelPath += levelName + ".ser";
-		System.out.println(levelPath);
 		try {
 			File file = new File(levelPath);
 			if (!file.exists())

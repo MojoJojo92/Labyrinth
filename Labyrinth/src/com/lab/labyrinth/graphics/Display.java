@@ -201,7 +201,8 @@ public class Display extends Canvas implements Runnable {
 		g.drawString("2nd " + level.getRankings().get(1), width / 2 - (("2nd " + level.getRankings().get(1)).length() * 20) / 2, 350);
 		g.drawString("3rd " + level.getRankings().get(2), width / 2 - (("3rd " + level.getRankings().get(2)).length() * 20) / 2, 400);
 		g.setColor(Color.green);
-		g.drawString(Integer.toString(time / 60) + ":" + Integer.toString(time % 60), width / 2 - ((Integer.toString(time / 60) + ":" + Integer.toString(time % 60)).length() * 25) / 2, 150);;
+		g.drawString(Integer.toString(time / 60) + ":" + Integer.toString(time % 60), width / 2 - ((Integer.toString(time / 60) + ":" + Integer.toString(time % 60)).length() * 25) / 2, 150);
+		;
 		renderQuit();
 	}
 
@@ -353,10 +354,8 @@ public class Display extends Canvas implements Runnable {
 
 	private void setRankings() {
 		rankings = new int[3];
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < 3; i++)
 			rankings[i] = Integer.parseInt(level.getRankings().get(i).substring(level.getRankings().get(i).indexOf(" ") + 2, level.getRankings().get(i).indexOf(":") - 1)) * 60 + Integer.parseInt((level.getRankings().get(i).substring(level.getRankings().get(i).indexOf(":") + 2, level.getRankings().get(i).length())));
-			System.out.println(rankings[i]);
-		}
 		if (time > rankings[0]) {
 			level.getRankings().remove(2);
 			level.getRankings().add(2, level.getRankings().get(1));

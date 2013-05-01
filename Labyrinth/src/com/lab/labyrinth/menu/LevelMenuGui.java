@@ -28,7 +28,7 @@ public class LevelMenuGui extends Canvas {
 	private boolean[] selected;
 	private MainMenuGui menu;
 
-	public LevelMenuGui(MainMenuGui menu) {
+	public LevelMenuGui(MainMenuGui menu, int choice) {
 		this.menu = menu;
 		frame = this.menu.getFrame();
 
@@ -48,6 +48,11 @@ public class LevelMenuGui extends Canvas {
 		addMouseListener(input);
 		addMouseMotionListener(input);
 
+		if (choice == 1)
+			updateStandardNames();
+		else if (choice == 2)
+			updateCustomNames();
+
 		loadImages();
 		clickCheck();
 
@@ -55,10 +60,6 @@ public class LevelMenuGui extends Canvas {
 	}
 
 	public void renderLevelMenu(Graphics g) {
-		if (this.menu.getChoice() == 1)
-			updateStandardNames();
-		else if (this.menu.getChoice() == 2)
-			updateCustomNames();
 		renderPlayBtn(g);
 		renderBackBtn(g);
 		renderArrows(g);
@@ -74,6 +75,7 @@ public class LevelMenuGui extends Canvas {
 				level = serialize.deserializeLevel(levelNames[selectedIndex]);
 				new Display(level.get(0));
 				frame.dispose();
+				menu.stopPlayMenu();
 			}
 		} else {
 			g.drawImage(playBtnOff, frame.getWidth() / 2 - playBtnOff.getWidth() / 2, 435, playBtnOff.getWidth(), playBtnOff.getHeight(), null);
@@ -95,8 +97,8 @@ public class LevelMenuGui extends Canvas {
 	private void renderArrows(Graphics g) {
 		if (mouseIn(frame.getWidth() / 2 - arrowUpOn.getWidth() / 2 / 2, frame.getWidth() / 2 - arrowUpOn.getWidth() / 2 / 2 + arrowUpOn.getWidth() / 2, 50, 50 + arrowUpOn.getHeight() / 2)) {
 			g.drawImage(arrowUpOn, frame.getWidth() / 2 - arrowUpOn.getWidth() / 2 / 2, 50, arrowUpOn.getWidth() / 2, arrowUpOn.getHeight() / 2, null);
-			if (InputHandler.MousePressed == 1 && nameIndex < 100) {
-				nameIndex++;
+			if (InputHandler.MousePressed == 1 && nameIndex > 0) {
+				nameIndex--;
 				clickCheck();
 			}
 		} else {
@@ -105,8 +107,8 @@ public class LevelMenuGui extends Canvas {
 
 		if (mouseIn(frame.getWidth() / 2 - arrowDownOn.getWidth() / 2 / 2, frame.getWidth() / 2 - arrowDownOn.getWidth() / 2 / 2 + arrowDownOn.getWidth() / 2, 390, 390 + arrowDownOn.getHeight() / 2)) {
 			g.drawImage(arrowDownOn, frame.getWidth() / 2 - arrowDownOn.getWidth() / 2 / 2, 390, arrowDownOn.getWidth() / 2, arrowDownOn.getHeight() / 2, null);
-			if (InputHandler.MousePressed == 1 && nameIndex > 0) {
-				nameIndex--;
+			if (InputHandler.MousePressed == 1 && nameIndex < 100) {
+				nameIndex++;
 				clickCheck();
 			}
 		} else {
@@ -126,11 +128,11 @@ public class LevelMenuGui extends Canvas {
 
 	private void renderSelect(Graphics g) {
 		for (int i = 0; i < 6; i++) {
-			if (mouseIn(316, 316 + 268, 91 + 48 * i, 91 + (48 * (i + 1)))) {
-				g.drawImage(select, 316, 91 + 48 * i, 268, 48, null);
+			if (mouseIn(frame.getWidth() / 2 - 268 / 2, frame.getWidth() / 2 - 268 / 2 + 268, 91 + 48 * i, 91 + (48 * (i + 1)))) {
+				g.drawImage(select, frame.getWidth() / 2 - 268 / 2, 91 + 48 * i, 268, 48, null);
 				selected(nameIndex + i);
 			} else if (selected[nameIndex + i]) {
-				g.drawImage(select, 316, 91 + 48 * i, 268, 48, null);
+				g.drawImage(select, frame.getWidth() / 2 - 268 / 2, 91 + 48 * i, 268, 48, null);
 			}
 		}
 	}
@@ -181,9 +183,8 @@ public class LevelMenuGui extends Canvas {
 	}
 
 	private void updateCustomNames() {
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 100; i++)
 			levelNames[i] = " ";
-		}
 		LevelSerialization serialize = new LevelSerialization();
 		nameList = serialize.deserializeNames();
 		for (int i = 0; i < nameList.size(); i++)
@@ -191,9 +192,8 @@ public class LevelMenuGui extends Canvas {
 	}
 
 	private void updateStandardNames() {
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 100; i++)
 			levelNames[i] = " ";
-		}
 		levelNames[0] = "Easy";
 	}
 }

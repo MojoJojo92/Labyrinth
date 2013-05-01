@@ -25,7 +25,7 @@ public class MainMenuGui extends Canvas implements Runnable {
 	private double k = 0, j = 0;
 	private int x, y;
 	private PlayMenuGui playMenu;
-	private LevelMenuGui levelMenu;
+	private LevelMenuGui standardLevelMenu, customLevelMenu;
 	private RankingsMenuGui rankingsMenu;
 	private int choice;
 
@@ -48,7 +48,8 @@ public class MainMenuGui extends Canvas implements Runnable {
 
 		choice = 0;
 		playMenu = new PlayMenuGui(this);
-		levelMenu = new LevelMenuGui(this);
+		standardLevelMenu = new LevelMenuGui(this, 1);
+		customLevelMenu = new LevelMenuGui(this, 2);
 		rankingsMenu = new RankingsMenuGui(this);
 
 		loadImages();
@@ -89,19 +90,34 @@ public class MainMenuGui extends Canvas implements Runnable {
 		x = (int) (Math.sin(k) * 350);
 		y = (int) (Math.cos(j) * 280);
 
+		setImageBorders();
+
 		g.drawImage(background, x - 350, y - 300, background.getWidth(), background.getHeight(), null);
 		g.drawImage(side, 0, 0, side.getWidth() / 2, frame.getHeight(), null);
 		g.drawImage(side, frame.getWidth() - side.getWidth() / 2, 0, side.getWidth() / 2, frame.getHeight(), null);
 
 		if (choice == 0)
 			playMenu.renderPlayMenu(g);
-		if (choice == 1 || choice == 2)
-			levelMenu.renderLevelMenu(g);
+		if (choice == 1)
+			standardLevelMenu.renderLevelMenu(g);
+		if (choice == 2)
+			customLevelMenu.renderLevelMenu(g);
 		if (choice == 3)
 			rankingsMenu.renderRankingsMenu(g);
 
 		g.dispose();
 		bs.show();
+	}
+	
+	private void setImageBorders(){
+		if (x > 350)
+			x = 350;
+		if (x < 350 - (background.getWidth() - frame.getWidth()))
+			x = 350 - (background.getWidth() - frame.getWidth());
+		if (y > 300)
+			y = 300;
+		if (y < 300 - (background.getHeight() - frame.getHeight()))
+			y = 300 - (background.getHeight() - frame.getHeight());
 	}
 
 	private void loadImages() {
