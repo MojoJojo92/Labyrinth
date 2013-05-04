@@ -11,6 +11,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
+import com.lab.labyrinth.Main;
 import com.lab.labyrinth.input.InputHandler;
 import com.lab.labyrinth.level.LevelCreate;
 import com.lab.labyrinth.menu.MainMenuGui;
@@ -101,6 +102,7 @@ public class LauncherGui extends Canvas implements Runnable {
 			g.drawImage(playOn, 620, 100, 160, 40, null);
 			g.drawImage(pointer, 740, 100, 40, 40, null);
 			if (InputHandler.MousePressed == 1) {
+				Main.game.getSound().playButton();
 				frame.dispose();
 				new MainMenuGui();
 				stopLauncher();
@@ -116,6 +118,7 @@ public class LauncherGui extends Canvas implements Runnable {
 			g.drawImage(createOn, 600, 160, 160, 40, null);
 			g.drawImage(pointer, 740, 160, 40, 40, null);
 			if (InputHandler.MousePressed == 1) {
+				Main.game.getSound().playButton();
 				frame.dispose();
 				new LevelCreate();
 				stopLauncher();
@@ -131,6 +134,7 @@ public class LauncherGui extends Canvas implements Runnable {
 			g.drawImage(optionsOn, 600, 220, 160, 40, null);
 			g.drawImage(pointer, 740, 220, 40, 40, null);
 			if (InputHandler.MousePressed == 1) {
+				Main.game.getSound().playButton();
 				new OptionsGui();
 				clickCheck();
 			}
@@ -144,6 +148,7 @@ public class LauncherGui extends Canvas implements Runnable {
 			g.drawImage(exitOn, 620, 280, 160, 40, null);
 			g.drawImage(pointer, 740, 280, 40, 40, null);
 			if (InputHandler.MousePressed == 1) {
+				Main.game.getSound().playButton();
 				System.exit(0);
 			}
 		} else {

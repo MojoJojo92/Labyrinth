@@ -15,6 +15,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import com.lab.labyrinth.Main;
 import com.lab.labyrinth.account.AccountGui;
 import com.lab.labyrinth.input.InputHandler;
 import com.lab.labyrinth.launcher.LauncherGui;
@@ -341,12 +342,14 @@ public class LevelCreate extends Canvas implements Runnable {
 			flag = new int[500][500];
 			new LevelSettingsGui(this);
 			clickCheck();
+			Main.game.getSound().playButton();
 			selected[selectedIndex] = false;
 		}
 	}
 
 	private void saveBtnListener() {
 		if (InputHandler.MousePressed == 1) {
+			Main.game.getSound().playButton();
 			clickCheck();
 			if (contains(4)) {
 				File file = new File("res/levels/" + levelName + "_" + AccountGui.Username + ".ser");
@@ -364,6 +367,7 @@ public class LevelCreate extends Canvas implements Runnable {
 
 	private void deleteBtnListener() {
 		if (InputHandler.MousePressed == 1) {
+			Main.game.getSound().playButton();
 			File file = new File("res/levels/" + names[selectedIndex] + "_" + AccountGui.Username + ".ser");
 			file.delete();
 			nameList.remove(names[selectedIndex] + "_" + AccountGui.Username);

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
+import com.lab.labyrinth.Main;
 import com.lab.labyrinth.graphics.Display;
 import com.lab.labyrinth.input.InputHandler;
 import com.lab.labyrinth.level.Level;
@@ -72,6 +73,7 @@ public class LevelMenuGui extends Canvas {
 			g.drawImage(playBtnOff, frame.getWidth() / 2 - playBtnOff.getWidth() / 2, 435, playBtnOff.getWidth(), playBtnOff.getHeight(), null);
 			if (InputHandler.MousePressed == 1) {
 				clickCheck();
+				Main.game.getSound().playButton();
 				LevelSerialization serialize = new LevelSerialization();
 				level = serialize.deserializeLevel(levelNames[selectedIndex]);
 				new Display(level.get(0));
@@ -89,6 +91,7 @@ public class LevelMenuGui extends Canvas {
 			g.drawImage(backBtnOff, frame.getWidth() / 2 - backBtnOff.getWidth() / 2, 505, backBtnOff.getWidth(), backBtnOff.getHeight(), null);
 			if (InputHandler.MousePressed == 1) {
 				clickCheck();
+				Main.game.getSound().playButton();
 				menu.setChoice(0);
 			}
 		} else {

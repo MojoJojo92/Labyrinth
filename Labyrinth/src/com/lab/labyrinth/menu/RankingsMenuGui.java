@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
+import com.lab.labyrinth.Main;
 import com.lab.labyrinth.input.InputHandler;
 import com.lab.labyrinth.level.Level;
 import com.lab.labyrinth.level.LevelSerialization;
@@ -84,6 +85,7 @@ public class RankingsMenuGui extends Canvas {
 			g.drawImage(backBtnOff, frame.getWidth() / 2 - backBtnOff.getWidth() / 2, 505, backBtnOff.getWidth(), backBtnOff.getHeight(), null);
 			if (InputHandler.MousePressed == 1) {
 				clickCheck();
+				Main.game.getSound().playButton();
 				menu.setChoice(0);
 			}
 		} else {

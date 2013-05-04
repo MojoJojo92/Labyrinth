@@ -16,6 +16,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.SwingConstants;
 
+import com.lab.labyrinth.Main;
+
 import java.awt.Font;
 
 public class OptionsGui extends JFrame {
@@ -279,6 +281,7 @@ public class OptionsGui extends JFrame {
 
 			config = new OptionsConfiguration();
 			config.saveConfiguration(volume, sensitivity, brightness, forward, backwards, right, left, turnRight, turnLeft, run, jump, path);
+			Main.game.loadOptions();
 
 			frame.dispose();
 		}

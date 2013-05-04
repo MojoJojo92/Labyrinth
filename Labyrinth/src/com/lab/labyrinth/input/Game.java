@@ -2,13 +2,15 @@ package com.lab.labyrinth.input;
 
 import java.awt.event.KeyEvent;
 
+import com.lab.labyrinth.audio.Sound;
 import com.lab.labyrinth.launcher.OptionsConfiguration;
 
 public class Game {
 
 	private Controller controls;
 	private OptionsConfiguration options;
-	private int renderDistance, time;
+	private Sound sound;
+	private int renderDistance, time, volume;
 	private double rotationSpeed;
 	private boolean play, pause, finish, countdown;
 	private int forward, backwards, left, right, jump, run, rLeft, rRight;
@@ -44,6 +46,8 @@ public class Game {
 		options.loadConfiguration("res/settings/config.xml");
 		renderDistance = options.getBrightness() * 130 + 1000;
 		rotationSpeed = options.getSensitivity() * 0.02/100;
+		volume = options.getVolume() * 56/100 - 50;
+		sound = new Sound(volume);
 		for(int i = 0; i < 100; i++)
 			loadControls(i);
 	}
@@ -81,6 +85,14 @@ public class Game {
 
 	public void setRotationSpeed(int rotationSpeed) {
 		this.rotationSpeed = rotationSpeed;
+	}
+
+	public int getVolume() {
+		return volume;
+	}
+
+	public void setVolume(int volume) {
+		this.volume = volume;
 	}
 
 	public boolean isPlay() {
@@ -121,5 +133,13 @@ public class Game {
 
 	public Controller getControls() {
 		return controls;
+	}
+
+	public Sound getSound() {
+		return sound;
+	}
+
+	public void setSound(Sound sound) {
+		this.sound = sound;
 	}
 }

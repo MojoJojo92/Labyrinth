@@ -16,6 +16,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
+import com.lab.labyrinth.Main;
 import com.lab.labyrinth.account.AccountGui;
 import com.lab.labyrinth.input.Game;
 import com.lab.labyrinth.input.InputHandler;
@@ -27,7 +28,6 @@ import com.lab.labyrinth.menu.MainMenuGui;
 public class Display extends Canvas implements Runnable {
 
 	private static final long serialVersionUID = 1L;
-	public static Game game;
 	private int width = 900;
 	private int height = 650;
 	private Thread thread;
@@ -38,15 +38,15 @@ public class Display extends Canvas implements Runnable {
 	private JFrame frame;
 	private Level level;
 	private Cursor blank;
-	private boolean running = false;
+	private boolean running = false, play = true;
 	private int[] pixels, rankings;
 	private int minutes, seconds, fullTime, fps;
 
-	private int frames, tickCount;
+	private int frames, tickCount, tempTick;
 	private double unprossesedSeconds;
 	private long previousTime, currentTime, passedTime;
 	private boolean ticked;
-	private int time;
+	private int time, tempTime;
 
 	public Display(Level level) {
 		this.level = level;
@@ -64,7 +64,6 @@ public class Display extends Canvas implements Runnable {
 		setMinimumSize(size);
 		setMaximumSize(size);
 
-		game = new Game();
 		screen = new Screen(this.level, width, height);
 		img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		pixels = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
@@ -73,6 +72,8 @@ public class Display extends Canvas implements Runnable {
 		unprossesedSeconds = 0;
 		ticked = false;
 		tickCount = 0;
+		tempTick = 0;
+		tempTime = 9;
 		frames = 0;
 		minutes = level.getMinTimeLimit();
 		seconds = level.getSecTimeLimit();
@@ -119,7 +120,7 @@ public class Display extends Canvas implements Runnable {
 	}
 
 	private void tick() {
-		game.tick(input.key);
+		Main.game.tick(input.key);
 	}
 
 	private void renderGame() {
@@ -130,11 +131,11 @@ public class Display extends Canvas implements Runnable {
 		}
 		g = bs.getDrawGraphics();
 
-		if (game.isPlay())
+		if (Main.game.isPlay())
 			renderPlay();
-		if (game.isFinish())
+		if (Main.game.isFinish())
 			renderFinish();
-		if (game.isPause())
+		if (Main.game.isPause())
 			renderPause();
 
 		g.dispose();
@@ -148,7 +149,7 @@ public class Display extends Canvas implements Runnable {
 		for (int i = 0; i < width * height; i++)
 			pixels[i] = screen.pixels[i];
 		g.drawImage(img, 0, 0, getWidth(), getHeight(), null);
-		if (game.isCountdown()) {
+		if (Main.game.isCountdown()) {
 			countdownTimer();
 		} else {
 			g.setFont(new Font("Verdana", 3, 20));
@@ -161,7 +162,7 @@ public class Display extends Canvas implements Runnable {
 
 	private void renderFinish() {
 		frame.getContentPane().setCursor(null);
-		game.setPlay(false);
+		Main.game.setPlay(false);
 		if (time > 0)
 			renderWin();
 		else
@@ -182,6 +183,10 @@ public class Display extends Canvas implements Runnable {
 		g.setColor(Color.green);
 		g.drawString(Integer.toString(time / 60) + ":" + Integer.toString(time % 60), width / 2 - ((Integer.toString(time / 60) + ":" + Integer.toString(time % 60)).length() * 25) / 2, 150);
 		renderQuit();
+		if (play) {
+			Main.game.getSound().playWin();
+			play = false;
+		}
 	}
 
 	private void renderLoose() {
@@ -192,7 +197,11 @@ public class Display extends Canvas implements Runnable {
 		g.drawString("Out of time", width / 2 - ("Out of time".length() * 25) / 2, 100);
 		renderQuit();
 		renderRestart();
-	}
+		if (play) {
+			Main.game.getSound().playLoose();
+			play = false;
+		}
+	} 
 
 	private void renderPause() {
 		frame.getContentPane().setCursor(null);
@@ -209,9 +218,10 @@ public class Display extends Canvas implements Runnable {
 			g.drawImage(resumeOn, width / 2 - (resumeOn.getWidth()) / 2, 190, resumeOn.getWidth(), resumeOn.getHeight(), null);
 			if (InputHandler.MousePressed == 1) {
 				clickCheck();
-			    game.setPlay(true);
-				game.setPause(false);
-				game.loadOptions();
+				Main.game.getSound().playButton();
+				Main.game.setPlay(true);
+				Main.game.setPause(false);
+				Main.game.loadOptions();
 			}
 		} else {
 			g.drawImage(resumeOff, width / 2 - (resumeOff.getWidth()) / 2, 200, resumeOff.getWidth(), resumeOff.getHeight(), null);
@@ -224,8 +234,10 @@ public class Display extends Canvas implements Runnable {
 			g.drawImage(restartOff, width / 2 - (restartOff.getWidth()) / 2, 270, restartOff.getWidth(), restartOff.getHeight(), null);
 			if (InputHandler.MousePressed == 1) {
 				clickCheck();
-				game = new Game();
+				Main.game.getSound().playButton();
+				Main.game = new Game();
 				tickCount = 0;
+				play = true;
 			}
 		} else {
 			g.drawImage(restartOff, width / 2 - (restartOff.getWidth()) / 2, 270, restartOff.getWidth(), restartOff.getHeight(), null);
@@ -237,6 +249,7 @@ public class Display extends Canvas implements Runnable {
 			g.drawImage(optionsOn, width / 2 - (optionsOn.getWidth()) / 2, 330, optionsOn.getWidth(), optionsOn.getHeight(), null);
 			if (InputHandler.MousePressed == 1) {
 				clickCheck();
+				Main.game.getSound().playButton();
 				new OptionsGui();
 			}
 		} else {
@@ -251,6 +264,9 @@ public class Display extends Canvas implements Runnable {
 				if (time > 0)
 					setRankings();
 				clickCheck();
+				Main.game.getSound().playButton();
+				Main.game.getSound().stopFootstep();
+				Main.game.getSound().stopWin();
 				frame.dispose();
 				new MainMenuGui();
 				stop();
@@ -286,7 +302,7 @@ public class Display extends Canvas implements Runnable {
 			tick();
 			unprossesedSeconds -= 1 / 60.0;
 			ticked = true;
-			if (!game.isPause())
+			if (!Main.game.isPause())
 				tickCount++;
 			if (tickCount % 60 == 0) {
 				fps = frames;
@@ -300,8 +316,15 @@ public class Display extends Canvas implements Runnable {
 		adjustColor();
 		time = fullTime - tickCount / 60;
 		g.drawString(Integer.toString(time / 60) + ":" + Integer.toString(time % 60), 20, 30);
-		if (time == 0)
-			game.setFinish(true);
+		if(time < 10 && time == tempTime){
+			Main.game.getSound().playBeep();
+			tempTime--;
+		}
+		if (time == 0){
+			play = true;
+			Main.game.setFinish(true);
+			tempTime = 9;
+		}
 	}
 
 	private void countdownTimer() {
@@ -309,20 +332,29 @@ public class Display extends Canvas implements Runnable {
 		g.setColor(Color.red);
 		if ((3 - tickCount / 60) > 0) {
 			g.drawString(Integer.toString(3 - tickCount / 60), 400, 310);
+			if(tickCount / 60 == tempTick){
+				Main.game.getSound().playBeep();
+				tempTick++;
+			}
 		} else {
 			g.setColor(Color.green);
 			g.drawString("GO!", 360, 310);
+			if(tempTick == 3){
+				Main.game.getSound().playBeep();
+				tempTick++;
+			}
 		}
 		if ((3 - tickCount / 60) == -1) {
-			game.setCountdown(false);
+			Main.game.setCountdown(false);
 			tickCount = 0;
+			tempTick = 0;
 		}
 	}
 
 	private void adjustColor() {
 		if (time < 10)
 			g.setColor(Color.red);
-		else if (game.isFinish())
+		else if (Main.game.isFinish())
 			g.setColor(Color.green);
 		else
 			g.setColor(Color.orange);

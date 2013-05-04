@@ -2,6 +2,8 @@ package com.lab.labyrinth.graphics;
 
 import java.util.ArrayList;
 
+import com.lab.labyrinth.Main;
+
 public class Render3D extends Render {
 
 	private double zBuffer[];
@@ -36,10 +38,10 @@ public class Render3D extends Render {
 	public void floor() {
 		for (int x = 0; x < width; x++)
 			zBufferWall[x] = 0;
-		forward = Display.game.getControls().getZ();
-		sideways = Display.game.getControls().getX();
-		up = Display.game.getControls().getY();
-		rotation = Display.game.getControls().getRotation();
+		forward = Main.game.getControls().getZ();
+		sideways = Main.game.getControls().getX();
+		up = Main.game.getControls().getY();
+		rotation = Main.game.getControls().getRotation();
 		cosine = Math.cos(rotation);
 		sine = Math.sin(rotation);
 
@@ -67,7 +69,7 @@ public class Render3D extends Render {
 				detectionList.get(i).detectCollision();
 		}
 		if (detectionList.get(detectionList.size() - 1).detectFinish())
-			Display.game.setFinish(true);
+			Main.game.setFinish(true);
 	}
 
 	private boolean playerIn(int x, int y, int z, int v) {
@@ -83,12 +85,12 @@ public class Render3D extends Render {
 	}
 
 	private void setBobbing() {
-		if (Display.game.getControls().isWalkBobbing())
-			bobbing = Math.sin(Display.game.getTime() / 5.0) * 0.5;
-		else if (Display.game.getControls().isRunBobbing())
-			bobbing = (Math.sin(Display.game.getTime() / 5.0) * 0.5) * 2;
-		else if (Display.game.getControls().isCrouchBobbing())
-			bobbing = (Math.sin(Display.game.getTime() / 5.0) * 0.1) / 4;
+		if (Main.game.getControls().isWalkBobbing())
+			bobbing = Math.sin(Main.game.getTime() / 5.0) * 0.5;
+		else if (Main.game.getControls().isRunBobbing())
+			bobbing = (Math.sin(Main.game.getTime() / 5.0) * 0.5) * 2;
+		else if (Main.game.getControls().isCrouchBobbing())
+			bobbing = (Math.sin(Main.game.getTime() / 5.0) * 0.1) / 4;
 		else
 			bobbing = 0;
 	}
@@ -201,7 +203,7 @@ public class Render3D extends Render {
 	public void renderDistancelimiter() {
 		for (int i = 0; i < width * height; i++) {
 			colour = pixels[i];
-			brightness = (int) (Display.game.getRenderDistance() / zBuffer[i]);
+			brightness = (int) (Main.game.getRenderDistance() / zBuffer[i]);
 
 			if (brightness < 0)
 				brightness = 0;

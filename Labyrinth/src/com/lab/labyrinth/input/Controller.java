@@ -1,6 +1,6 @@
 package com.lab.labyrinth.input;
 
-import com.lab.labyrinth.graphics.Display;
+import com.lab.labyrinth.Main;
 
 public class Controller {
 	
@@ -10,14 +10,14 @@ public class Controller {
 	private double rotationSpeed, walkSpeed, jumpHeight, crouchHeight, xMove, zMove;
 
 	public void tick() {
-		rotationSpeed = Display.game.getRotationSpeed();
+		rotationSpeed = Main.game.getRotationSpeed();
 		walkSpeed = 0.55;
 		jumpHeight = 0.5;
 		crouchHeight = 0.5;
 		xMove = 0;
 		zMove = 0;
 
-		if (Display.game.isPlay() && !Display.game.isCountdown()) {
+		if (Main.game.isPlay() && !Main.game.isCountdown()) {
 			position();
 			rotation();
 			bobbing();
@@ -25,8 +25,8 @@ public class Controller {
 		}
 
 		if (pause) {
-			Display.game.setPlay(false);
-			Display.game.setPause(true);
+			Main.game.setPlay(false);
+			Main.game.setPause(true);
 		}
 
 		xa += (xMove * Math.cos(rotation) + zMove * Math.sin(rotation)) * walkSpeed;
@@ -45,18 +45,22 @@ public class Controller {
 		if (forward) {
 			zMove++;
 			walkBobbing = true;
+			Main.game.getSound().playFootstep();
 		}
 		if (back) {
 			zMove--;
 			walkBobbing = true;
+			Main.game.getSound().playFootstep();
 		}
 		if (left) {
 			xMove--;
 			walkBobbing = true;
+			Main.game.getSound().playFootstep();
 		}
 		if (right) {
 			xMove++;
 			walkBobbing = true;
+			Main.game.getSound().playFootstep();
 		}
 	}
 	
@@ -72,8 +76,10 @@ public class Controller {
 			runBobbing = true;
 		if (crouch && walking())
 			runBobbing = true;
-		if (!walking())
+		if (!walking()){
 			walkBobbing = false;
+			Main.game.getSound().stopFootstep();
+		}
 		if (!run)
 			runBobbing = false;
 		if (!crouch)
