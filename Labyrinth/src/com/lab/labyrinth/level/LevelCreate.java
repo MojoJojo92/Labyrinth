@@ -149,7 +149,6 @@ public class LevelCreate extends Canvas implements Runnable {
 			g.drawImage(newBtn, 42, 422, newBtn.getWidth(), newBtn.getHeight(), null);
 			newBtnListener();
 		}
-
 	}
 
 	private void renderDeleteBtn() {

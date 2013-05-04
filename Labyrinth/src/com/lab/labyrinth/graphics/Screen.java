@@ -19,13 +19,12 @@ public class Screen extends Render {
 		constructDetection();
 		finishBlock((finishX - spawnX - 1) * 3,(finishY - spawnY - 1) * 3);
 		render3D = new Render3D(detectionList, width, height);
-		renderDistance = 500;
+		renderDistance = 300;
 	}
 
 	public void render() {
-		for (int i = 0; i < width * height; i++) {
+		for (int i = 0; i < width * height; i++)
 			pixels[i] = 0;
-		}
 		render3D.floor();
 
 		for (int i = 0; i < level.getLvlWidth(); i++)
@@ -84,9 +83,5 @@ public class Screen extends Render {
 	private void findBlocks(int i, int j) {
 		if (level.getFlag()[i][j] == 1 || level.getFlag()[i][j] == 2)
 			fullBlock(((i - spawnX) - 1) * 3, ((j - spawnY) - 1) * 3);
-		else if (level.getFlag()[i][j] == 4){
-			
-		}
-			//finishBlock(((i - spawnX) - 1) * 3, ((j - spawnY) - 1) * 3);
 	}
 }

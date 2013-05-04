@@ -27,12 +27,11 @@ import com.lab.labyrinth.menu.MainMenuGui;
 public class Display extends Canvas implements Runnable {
 
 	private static final long serialVersionUID = 1L;
-	private static int width = 900;
-	private static int height = 650;
-	public static int mouseSpeed;
+	public static Game game;
+	private int width = 900;
+	private int height = 650;
 	private Thread thread;
 	private Screen screen;
-	public static Game game;
 	private InputHandler input;
 	private BufferedImage img, resumeOff, resumeOn, restartOff, restartOn, optionsOff, optionsOn, quitOff, quitOn, filter, cursor;
 	private Graphics g;
@@ -121,18 +120,6 @@ public class Display extends Canvas implements Runnable {
 
 	private void tick() {
 		game.tick(input.key);
-		
-		/*newX = InputHandler.MouseX;
-		if (newX > oldX)
-			game.setTurnRight(true);
-		if (newX < oldX)
-			game.setTurnLeft(true);
-		if (newX == oldX) {
-			game.setTurnLeft(false);
-			game.setTurnRight(false);
-		}
-		mouseSpeed = Math.abs(newX - oldX);
-		oldX = newX;*/
 	}
 
 	private void renderGame() {
@@ -149,7 +136,6 @@ public class Display extends Canvas implements Runnable {
 			renderFinish();
 		if (game.isPause())
 			renderPause();
-		//System.out.println(game.isPause());
 
 		g.dispose();
 		bs.show();
@@ -205,6 +191,7 @@ public class Display extends Canvas implements Runnable {
 		g.setColor(Color.orange);
 		g.drawString("Out of time", width / 2 - ("Out of time".length() * 25) / 2, 100);
 		renderQuit();
+		renderRestart();
 	}
 
 	private void renderPause() {
@@ -233,7 +220,8 @@ public class Display extends Canvas implements Runnable {
 
 	private void renderRestart() {
 		if (mouseIn(width / 2 - (restartOn.getWidth()) / 2, width / 2 - (restartOn.getWidth()) / 2 + restartOn.getWidth(), 270, 270 + restartOn.getHeight())) {
-			g.drawImage(restartOn, width / 2 - (restartOn.getWidth()) / 2, 260, restartOn.getWidth(), restartOn.getHeight(), null);
+			g.drawImage(restartOn, width / 2 - (restartOn.getWidth()) / 2, 261, restartOn.getWidth(), restartOn.getHeight(), null);
+			g.drawImage(restartOff, width / 2 - (restartOff.getWidth()) / 2, 270, restartOff.getWidth(), restartOff.getHeight(), null);
 			if (InputHandler.MousePressed == 1) {
 				clickCheck();
 				game = new Game();

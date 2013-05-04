@@ -68,7 +68,8 @@ public class LevelMenuGui extends Canvas {
 
 	private void renderPlayBtn(Graphics g) {
 		if (mouseIn(frame.getWidth() / 2 - playBtnOn.getWidth() / 2, frame.getWidth() / 2 - playBtnOn.getWidth() / 2 + playBtnOn.getWidth(), 430, 430 + playBtnOn.getHeight())) {
-			g.drawImage(playBtnOn, frame.getWidth() / 2 - playBtnOn.getWidth() / 2, 430, playBtnOn.getWidth(), playBtnOn.getHeight(), null);
+			g.drawImage(playBtnOn, frame.getWidth() / 2 - playBtnOn.getWidth() / 2, 425, playBtnOn.getWidth(), playBtnOn.getHeight(), null);
+			g.drawImage(playBtnOff, frame.getWidth() / 2 - playBtnOff.getWidth() / 2, 435, playBtnOff.getWidth(), playBtnOff.getHeight(), null);
 			if (InputHandler.MousePressed == 1) {
 				clickCheck();
 				LevelSerialization serialize = new LevelSerialization();
@@ -84,7 +85,8 @@ public class LevelMenuGui extends Canvas {
 
 	private void renderBackBtn(Graphics g) {
 		if (mouseIn(frame.getWidth() / 2 - backBtnOn.getWidth() / 2, frame.getWidth() / 2 - backBtnOn.getWidth() / 2 + backBtnOn.getWidth(), 500, 500 + backBtnOn.getHeight())) {
-			g.drawImage(backBtnOn, frame.getWidth() / 2 - backBtnOn.getWidth() / 2, 500, backBtnOn.getWidth(), backBtnOn.getHeight(), null);
+			g.drawImage(backBtnOn, frame.getWidth() / 2 - backBtnOn.getWidth() / 2, 495, backBtnOn.getWidth(), backBtnOn.getHeight(), null);
+			g.drawImage(backBtnOff, frame.getWidth() / 2 - backBtnOff.getWidth() / 2, 505, backBtnOff.getWidth(), backBtnOff.getHeight(), null);
 			if (InputHandler.MousePressed == 1) {
 				clickCheck();
 				menu.setChoice(0);

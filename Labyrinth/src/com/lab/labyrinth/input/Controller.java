@@ -10,7 +10,7 @@ public class Controller {
 	private double rotationSpeed, walkSpeed, jumpHeight, crouchHeight, xMove, zMove;
 
 	public void tick() {
-		rotationSpeed = 0.008;
+		rotationSpeed = Display.game.getRotationSpeed();
 		walkSpeed = 0.55;
 		jumpHeight = 0.5;
 		crouchHeight = 0.5;
@@ -186,5 +186,13 @@ public class Controller {
 
 	public void setRotation(double rotation) {
 		this.rotation = rotation;
+	}
+
+	public double getRotationSpeed() {
+		return rotationSpeed;
+	}
+
+	public void setRotationSpeed(double rotationSpeed) {
+		this.rotationSpeed = rotationSpeed;
 	}
 }

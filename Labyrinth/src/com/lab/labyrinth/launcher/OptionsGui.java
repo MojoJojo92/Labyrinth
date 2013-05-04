@@ -294,10 +294,10 @@ public class OptionsGui extends JFrame {
 			backwardsTF.setText("S");
 			rightTF.setText("D");
 			leftTF.setText("A");
-			turnRightTF.setText("RIGHT");
-			turnLeftTF.setText("LEFT");
-			runTF.setText("SHIFT");
-			jumpTF.setText("SPACE");
+			turnRightTF.setText("Right");
+			turnLeftTF.setText("Left");
+			runTF.setText("Shift");
+			jumpTF.setText("Space");
 
 		}
 	}
