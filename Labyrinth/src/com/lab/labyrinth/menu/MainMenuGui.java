@@ -122,7 +122,7 @@ public class MainMenuGui extends Canvas implements Runnable {
 
 	private void loadImages() {
 		try {
-			background = ImageIO.read(MainMenuGui.class.getResource("/textures/background3.png"));
+			background = ImageIO.read(MainMenuGui.class.getResource("/textures/background.png"));
 			side = ImageIO.read(MainMenuGui.class.getResource("/textures/side.png"));
 		} catch (IOException e) {
 			e.printStackTrace();

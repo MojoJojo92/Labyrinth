@@ -138,6 +138,7 @@ public class LevelCreate extends Canvas implements Runnable {
 			g.drawImage(doneBtn, 41, 518, doneBtn.getWidth(), doneBtn.getHeight(), null);
 			if (InputHandler.MousePressed == 1) {
 				clickCheck();
+				Main.game.getSound().playButton();
 				frame.dispose();
 				new LauncherGui();
 				stopCreate();

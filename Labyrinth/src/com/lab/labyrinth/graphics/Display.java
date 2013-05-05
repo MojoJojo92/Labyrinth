@@ -42,18 +42,16 @@ public class Display extends Canvas implements Runnable {
 	private int[] pixels, rankings;
 	private int minutes, seconds, fullTime, fps;
 
-	private int frames, tickCount, tempTick;
+	private int frames, tickCount, tempTick, time, tempTime;
 	private double unprossesedSeconds;
 	private long previousTime, currentTime, passedTime;
 	private boolean ticked;
-	private int time, tempTime;
 
 	public Display(Level level) {
 		this.level = level;
 
 		frame = new JFrame("Labyrinth");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setResizable(false);
 		frame.setVisible(true);
 		frame.setSize(width, height);
 		frame.getContentPane().add(this);
@@ -145,6 +143,7 @@ public class Display extends Canvas implements Runnable {
 
 	private void renderPlay() {
 		frame.getContentPane().setCursor(blank);
+		Main.game.getSound().playAmbiance();
 		screen.render();
 		for (int i = 0; i < width * height; i++)
 			pixels[i] = screen.pixels[i];
@@ -154,8 +153,8 @@ public class Display extends Canvas implements Runnable {
 		} else {
 			g.setFont(new Font("Verdana", 3, 20));
 			g.setColor(Color.orange);
-			g.drawString(fps + "fps", 810, 70);
-			g.drawString("Best Time " + level.getMinBestTime() + ":" + level.getSecBestTime(), 700, 30);
+			g.drawString(fps + "fps", (int) (frame.getWidth() - g.getFontMetrics().getStringBounds(fps + "fps", g).getWidth()) - 30, 60);
+			g.drawString("Best Time " + level.getMinBestTime() + ":" + level.getSecBestTime(), (int) (frame.getWidth() - g.getFontMetrics().getStringBounds("Best Time " + level.getMinBestTime() + ":" + level.getSecBestTime(), g).getWidth()) - 30, 30);
 			timer();
 		}
 	}
@@ -170,18 +169,20 @@ public class Display extends Canvas implements Runnable {
 	}
 
 	private void renderWin() {
+		Main.game.getSound().stopAmbiance();
+		Main.game.getSound().stopFootstep();
 		g.setFont(new Font("Verdana", 3, 40));
 		g.drawImage(img, 0, 0, getWidth(), getHeight(), null);
 		g.drawImage(filter, 0, 0, getWidth(), getHeight(), null);
 		g.setColor(Color.orange);
-		g.drawString("Your Time", width / 2 - ("Your Time".length() * 25) / 2, 100);
-		g.drawString("Level Rankings", width / 2 - ("Level Rankings".length() * 25) / 2, 250);
+		g.drawString("Your Time", frame.getWidth() / 2 - ("Your Time".length() * 25) / 2, 100);
+		g.drawString("Level Rankings", frame.getWidth() / 2 - ("Level Rankings".length() * 25) / 2, 250);
 		g.setFont(new Font("Verdana", 3, 35));
-		g.drawString("1st " + level.getRankings().get(0), width / 2 - (("1st " + level.getRankings().get(0)).length() * 20) / 2, 300);
-		g.drawString("2nd " + level.getRankings().get(1), width / 2 - (("2nd " + level.getRankings().get(1)).length() * 20) / 2, 350);
-		g.drawString("3rd " + level.getRankings().get(2), width / 2 - (("3rd " + level.getRankings().get(2)).length() * 20) / 2, 400);
+		g.drawString("1st " + level.getRankings().get(0), frame.getWidth() / 2 - (("1st " + level.getRankings().get(0)).length() * 20) / 2, 300);
+		g.drawString("2nd " + level.getRankings().get(1), frame.getWidth() / 2 - (("2nd " + level.getRankings().get(1)).length() * 20) / 2, 350);
+		g.drawString("3rd " + level.getRankings().get(2), frame.getWidth() / 2 - (("3rd " + level.getRankings().get(2)).length() * 20) / 2, 400);
 		g.setColor(Color.green);
-		g.drawString(Integer.toString(time / 60) + ":" + Integer.toString(time % 60), width / 2 - ((Integer.toString(time / 60) + ":" + Integer.toString(time % 60)).length() * 25) / 2, 150);
+		g.drawString(Integer.toString(time / 60) + ":" + Integer.toString(time % 60), frame.getWidth() / 2 - ((Integer.toString(time / 60) + ":" + Integer.toString(time % 60)).length() * 25) / 2, 150);
 		renderQuit();
 		if (play) {
 			Main.game.getSound().playWin();
@@ -190,20 +191,24 @@ public class Display extends Canvas implements Runnable {
 	}
 
 	private void renderLoose() {
+		Main.game.getSound().stopAmbiance();
+		Main.game.getSound().stopFootstep();
 		g.setFont(new Font("Verdana", 3, 40));
 		g.drawImage(img, 0, 0, getWidth(), getHeight(), null);
 		g.drawImage(filter, 0, 0, getWidth(), getHeight(), null);
 		g.setColor(Color.orange);
-		g.drawString("Out of time", width / 2 - ("Out of time".length() * 25) / 2, 100);
+		g.drawString("Out of time", frame.getWidth() / 2 - ("Out of time".length() * 25) / 2, 100);
 		renderQuit();
 		renderRestart();
 		if (play) {
 			Main.game.getSound().playLoose();
 			play = false;
 		}
-	} 
+	}
 
 	private void renderPause() {
+		Main.game.getSound().stopAmbiance();
+		Main.game.getSound().stopFootstep();
 		frame.getContentPane().setCursor(null);
 		g.drawImage(img, 0, 0, getWidth(), getHeight(), null);
 		g.drawImage(filter, 0, 0, getWidth(), getHeight(), null);
@@ -214,8 +219,8 @@ public class Display extends Canvas implements Runnable {
 	}
 
 	private void renderResume() {
-		if (mouseIn(width / 2 - (resumeOn.getWidth()) / 2, width / 2 - (resumeOn.getWidth()) / 2 + resumeOn.getWidth(), 200, 200 + resumeOn.getHeight())) {
-			g.drawImage(resumeOn, width / 2 - (resumeOn.getWidth()) / 2, 190, resumeOn.getWidth(), resumeOn.getHeight(), null);
+		if (mouseIn(frame.getWidth() / 2 - (resumeOn.getWidth()) / 2, frame.getWidth() / 2 - (resumeOn.getWidth()) / 2 + resumeOn.getWidth(), 200, 200 + resumeOn.getHeight())) {
+			g.drawImage(resumeOn, frame.getWidth() / 2 - (resumeOn.getWidth()) / 2, 190, resumeOn.getWidth(), resumeOn.getHeight(), null);
 			if (InputHandler.MousePressed == 1) {
 				clickCheck();
 				Main.game.getSound().playButton();
@@ -224,14 +229,14 @@ public class Display extends Canvas implements Runnable {
 				Main.game.loadOptions();
 			}
 		} else {
-			g.drawImage(resumeOff, width / 2 - (resumeOff.getWidth()) / 2, 200, resumeOff.getWidth(), resumeOff.getHeight(), null);
+			g.drawImage(resumeOff, frame.getWidth() / 2 - (resumeOff.getWidth()) / 2, 200, resumeOff.getWidth(), resumeOff.getHeight(), null);
 		}
 	}
 
 	private void renderRestart() {
-		if (mouseIn(width / 2 - (restartOn.getWidth()) / 2, width / 2 - (restartOn.getWidth()) / 2 + restartOn.getWidth(), 270, 270 + restartOn.getHeight())) {
-			g.drawImage(restartOn, width / 2 - (restartOn.getWidth()) / 2, 261, restartOn.getWidth(), restartOn.getHeight(), null);
-			g.drawImage(restartOff, width / 2 - (restartOff.getWidth()) / 2, 270, restartOff.getWidth(), restartOff.getHeight(), null);
+		if (mouseIn(frame.getWidth() / 2 - (restartOn.getWidth()) / 2, frame.getWidth() / 2 - (restartOn.getWidth()) / 2 + restartOn.getWidth(), 270, 270 + restartOn.getHeight())) {
+			g.drawImage(restartOn, frame.getWidth() / 2 - (restartOn.getWidth()) / 2, 261, restartOn.getWidth(), restartOn.getHeight(), null);
+			g.drawImage(restartOff, frame.getWidth() / 2 - (restartOff.getWidth()) / 2, 270, restartOff.getWidth(), restartOff.getHeight(), null);
 			if (InputHandler.MousePressed == 1) {
 				clickCheck();
 				Main.game.getSound().playButton();
@@ -240,26 +245,26 @@ public class Display extends Canvas implements Runnable {
 				play = true;
 			}
 		} else {
-			g.drawImage(restartOff, width / 2 - (restartOff.getWidth()) / 2, 270, restartOff.getWidth(), restartOff.getHeight(), null);
+			g.drawImage(restartOff, frame.getWidth() / 2 - (restartOff.getWidth()) / 2, 270, restartOff.getWidth(), restartOff.getHeight(), null);
 		}
 	}
 
 	private void renderOptions() {
-		if (mouseIn(width / 2 - (optionsOn.getWidth()) / 2, width / 2 - (optionsOn.getWidth()) / 2 + optionsOn.getWidth(), 340, 340 + optionsOn.getHeight())) {
-			g.drawImage(optionsOn, width / 2 - (optionsOn.getWidth()) / 2, 330, optionsOn.getWidth(), optionsOn.getHeight(), null);
+		if (mouseIn(frame.getWidth() / 2 - (optionsOn.getWidth()) / 2, frame.getWidth() / 2 - (optionsOn.getWidth()) / 2 + optionsOn.getWidth(), 340, 340 + optionsOn.getHeight())) {
+			g.drawImage(optionsOn, frame.getWidth() / 2 - (optionsOn.getWidth()) / 2, 330, optionsOn.getWidth(), optionsOn.getHeight(), null);
 			if (InputHandler.MousePressed == 1) {
 				clickCheck();
 				Main.game.getSound().playButton();
 				new OptionsGui();
 			}
 		} else {
-			g.drawImage(optionsOff, width / 2 - (optionsOff.getWidth()) / 2, 340, optionsOff.getWidth(), optionsOff.getHeight(), null);
+			g.drawImage(optionsOff, frame.getWidth() / 2 - (optionsOff.getWidth()) / 2, 340, optionsOff.getWidth(), optionsOff.getHeight(), null);
 		}
 	}
 
 	private void renderQuit() {
-		if (mouseIn(width / 2 - (quitOn.getWidth()) / 2, width / 2 - (quitOn.getWidth()) / 2 + quitOn.getWidth(), 410, 410 + quitOn.getHeight())) {
-			g.drawImage(quitOn, width / 2 - (quitOn.getWidth()) / 2, 400, quitOn.getWidth(), quitOn.getHeight(), null);
+		if (mouseIn(frame.getWidth() / 2 - (quitOn.getWidth()) / 2, frame.getWidth() / 2 - (quitOn.getWidth()) / 2 + quitOn.getWidth(), 410, 410 + quitOn.getHeight())) {
+			g.drawImage(quitOn, frame.getWidth() / 2 - (quitOn.getWidth()) / 2, 400, quitOn.getWidth(), quitOn.getHeight(), null);
 			if (InputHandler.MousePressed == 1) {
 				if (time > 0)
 					setRankings();
@@ -272,7 +277,7 @@ public class Display extends Canvas implements Runnable {
 				stop();
 			}
 		} else {
-			g.drawImage(quitOff, width / 2 - (quitOff.getWidth()) / 2, 410, quitOff.getWidth(), quitOff.getHeight(), null);
+			g.drawImage(quitOff, frame.getWidth() / 2 - (quitOff.getWidth()) / 2, 410, quitOff.getWidth(), quitOff.getHeight(), null);
 		}
 	}
 
@@ -315,12 +320,12 @@ public class Display extends Canvas implements Runnable {
 	private void timer() {
 		adjustColor();
 		time = fullTime - tickCount / 60;
-		g.drawString(Integer.toString(time / 60) + ":" + Integer.toString(time % 60), 20, 30);
-		if(time < 10 && time == tempTime){
+		g.drawString(Integer.toString(time / 60) + ":" + Integer.toString(time % 60), 15, 30);
+		if (time < 10 && time == tempTime) {
 			Main.game.getSound().playBeep();
 			tempTime--;
 		}
-		if (time == 0){
+		if (time == 0) {
 			play = true;
 			Main.game.setFinish(true);
 			tempTime = 9;
@@ -331,15 +336,16 @@ public class Display extends Canvas implements Runnable {
 		g.setFont(new Font("Verdana", 3, 100));
 		g.setColor(Color.red);
 		if ((3 - tickCount / 60) > 0) {
-			g.drawString(Integer.toString(3 - tickCount / 60), 400, 310);
-			if(tickCount / 60 == tempTick){
+			g.drawString(Integer.toString(3 - tickCount / 60), (int) (frame.getWidth() - g.getFontMetrics().getStringBounds(Integer.toString(3 - tickCount / 60), g).getWidth()) / 2, frame.getHeight()/2);
+			if (tickCount / 60 == tempTick) {
 				Main.game.getSound().playBeep();
 				tempTick++;
 			}
 		} else {
 			g.setColor(Color.green);
-			g.drawString("GO!", 360, 310);
-			if(tempTick == 3){
+			g.getFontMetrics().getStringBounds("GO!", g);
+			g.drawString("GO!", (int) (frame.getWidth() - g.getFontMetrics().getStringBounds("GO!", g).getWidth()) / 2, frame.getHeight()/2);
+			if (tempTick == 3) {
 				Main.game.getSound().playBeep();
 				tempTick++;
 			}

@@ -158,7 +158,7 @@ public class LauncherGui extends Canvas implements Runnable {
 
 	private void loadImages() {
 		try {
-			background = ImageIO.read(LauncherGui.class.getResource("/launcher/Launcher_Img.jpg"));
+			background = ImageIO.read(LauncherGui.class.getResource("/launcher/launcherBackground.jpg"));
 			pointer = ImageIO.read(LauncherGui.class.getResource("/launcher/pointer.png"));
 			playOn = ImageIO.read(LauncherGui.class.getResource("/launcher/play_on.png"));
 			playOff = ImageIO.read(LauncherGui.class.getResource("/launcher/play_off.png"));

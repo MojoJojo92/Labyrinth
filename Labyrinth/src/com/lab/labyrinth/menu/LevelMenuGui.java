@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 
 import com.lab.labyrinth.Main;
 import com.lab.labyrinth.graphics.Display;
+import com.lab.labyrinth.input.Game;
 import com.lab.labyrinth.input.InputHandler;
 import com.lab.labyrinth.level.Level;
 import com.lab.labyrinth.level.LevelSerialization;
@@ -76,6 +77,7 @@ public class LevelMenuGui extends Canvas {
 				Main.game.getSound().playButton();
 				LevelSerialization serialize = new LevelSerialization();
 				level = serialize.deserializeLevel(levelNames[selectedIndex]);
+				Main.game = new Game();
 				new Display(level.get(0));
 				frame.dispose();
 				menu.stopPlayMenu();

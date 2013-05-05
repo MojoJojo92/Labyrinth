@@ -8,9 +8,9 @@
 <entry key="TurnRight">Right</entry>
 <entry key="TurnLeft">Left</entry>
 <entry key="Left">A</entry>
-<entry key="Brightness">100</entry>
+<entry key="Brightness">50</entry>
 <entry key="Right">D</entry>
-<entry key="Sensitivity">100</entry>
-<entry key="Volume">18</entry>
+<entry key="Sensitivity">50</entry>
+<entry key="Volume">100</entry>
 <entry key="Back">S</entry>
 </properties>
